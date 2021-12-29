@@ -8,7 +8,6 @@ export default {
     mounted() {
 
         toastBus.$on('toast', (data) => {
-            console.log(data)
 
             if (typeof (data) === "object") { this.notification(data) } else {
                 switch (data) {

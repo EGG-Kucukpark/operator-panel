@@ -62,8 +62,10 @@ io.on("connection", socket => {
 
 
 
-    socket.emit('notification', (data) => {
-        console.log(data);
+    socket.on('newNotification', (data) => {
+        console.log("Yeni Bildirim!");
+        
+        socket.broadcast.emit('notification', data);
     })
 
 

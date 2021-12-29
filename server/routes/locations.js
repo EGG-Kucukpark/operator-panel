@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const locationSchema = require('../models/locationDB');
 const bodyParser = require('body-parser');
-
+const axios = require('axios');
 router.use(bodyParser());
 
 router.get('/getLocations', (req, res) => {

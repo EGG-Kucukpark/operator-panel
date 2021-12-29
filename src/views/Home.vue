@@ -368,7 +368,7 @@ export default {
     },
 
     calcLoc(data) {
-      this.$http.post('/calcLoc', { drivers: this.driversSelect, user: data }).then((res) => {
+      this.$http.post('/calcLoc', { drivers: this.drivers, user: data }).then((res) => {
         let data = res.data;
         data.forEach((item) => {
           data.sort((a, b) => {

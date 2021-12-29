@@ -56,6 +56,7 @@ http.listen(socketPort, () => {
 });
 
 io.on("connection", socket => {
+  
     socket.on("disconnect", () => {
         console.log("socket disconnected");
     });
@@ -69,6 +70,14 @@ io.on("connection", socket => {
     })
 
 
+    socket.on('customerLocation', (data) => {
+        console.log("Yeni Customer Location!");
+        
+        socket.broadcast.emit('customerLocation', data); 
+
+    })
+
+
     socket.on('driverLocation', (data) => {
         let driver = {
             id: data.user._id,
@@ -79,7 +88,7 @@ io.on("connection", socket => {
             status: data.user.status
 
         }
-        console.log(driver.name);
+  
 
 
         socket.broadcast.emit('driverLoc', driver);

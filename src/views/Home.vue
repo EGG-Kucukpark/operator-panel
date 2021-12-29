@@ -301,7 +301,6 @@ export default {
   mounted() {
 
     this.$socket.on('driverLoc', (data) => {
-
       if (this.drivers.length == 0) {
         this.drivers.push(data);
       }
@@ -321,7 +320,6 @@ export default {
           }
         })
 
-
         if (isExist) {
           this.drivers.push(data);
         }
@@ -329,10 +327,13 @@ export default {
 
       }
 
-   
 
     });
 
+
+    this.$socket.on('customerLocation', (data) => {
+        this.userLocation();
+    });
 
 
     this.userLocation();

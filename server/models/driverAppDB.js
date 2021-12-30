@@ -21,6 +21,9 @@ var driverAppSchema = new Schmea({
     iban: {
         type: String,
     },
+    il:{
+        type: String,
+    },
 
     referans: {
         type: String,

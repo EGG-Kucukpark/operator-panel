@@ -1,12 +1,11 @@
 <template>
   <div>
     <b-card no-body>
-      <b-button  @mouseenter="$refs.bilgiler.toggle()" variant="success">Detaylar</b-button>
+      <b-button @mouseenter="$refs.bilgiler.toggle()" variant="success">Detaylar</b-button>
     </b-card>
 
-
-    <b-collapse  ref="bilgiler" id="bilgiler">
-      <b-row  @mouseleave="$refs.bilgiler.toggle()" class="match-height">
+    <b-collapse ref="bilgiler" id="bilgiler">
+      <b-row @mouseleave="$refs.bilgiler.toggle()" class="match-height">
         <b-col lg="4" sm="12">
           <b-card>
             <b-card-title>
@@ -118,8 +117,7 @@
                     <div class="selected d-center">{{ option.name }}</div>
                   </template>
                 </v-select>
-
-                {{driverPhone}}
+                {{ driverPhone }}
               </b-form-group>
 
               <b-form-group label="Müşteri Numarası" label-for="musteri" class="col-lg-4 col-sm-12">
@@ -177,16 +175,16 @@
       >
         <!--    <GmapCluster> -->
         <GmapMarker
-          :key="index"
-          v-for="(m, index) in drivers"
+          v-for="m in drivers"
+          :key="m.id"
           :position="setLocation(m)"
           :icon="setIcon(m)"
           @click="openWindow(m)"
         />
 
         <GmapMarker
-          :key="index"
-          v-for="(m, index) in userLocations"
+          v-for="m in userLocations"
+          :key="m.id"
           :position="{ lat: m.location.degreesLatitude, lng: m.location.degreesLongitude }"
           :clickable="true"
           icon="../public/../assets/customer.png"
@@ -223,7 +221,7 @@
 
             <p style="font-weight:500">
               En yakın Araç :
-              <b-spinner small v-if="openedData2.driver == null" variant="second"></b-spinner>
+              <b-spinner small v-if="!driverShow" variant="second"></b-spinner>
               <span v-else>{{ openedData2.driver.name }} / {{ openedData2.driver.distanceText }}</span>
             </p>
 
@@ -260,6 +258,7 @@ export default {
   },
   data() {
     return {
+      driverShow: false,
       window_open: false,
       openedData: '',
       infowindow: { lat: 10.0, lng: 10.0 },
@@ -301,18 +300,17 @@ export default {
   mounted() {
 
     this.$socket.on('driverLoc', (data) => {
+
+
       if (this.drivers.length == 0) {
         this.drivers.push(data);
       }
       else {
-
         var isExist = this.drivers.every((item, index) => {
           if (item.id == data.id) {
             item.lat = data.lat;
             item.lng = data.lng;
             item.status = data.status;
-
-
             return false;
           }
           else {
@@ -332,7 +330,7 @@ export default {
 
 
     this.$socket.on('customerLocation', (data) => {
-        this.userLocation();
+      this.userLocation();
     });
 
 
@@ -358,8 +356,8 @@ export default {
     },
 
     async openWindow2(m) {
+      this.driverShow = false;
       this.openedData2 = m;
-      console.log(m)
       this.infowindow2 = { lat: m.location.degreesLatitude, lng: m.location.degreesLongitude }
       this.openedData2.driver = null;
       this.calcLoc(m);
@@ -369,22 +367,19 @@ export default {
 
     calcLoc(data) {
       this.$http.post('/calcLoc', { drivers: this.drivers, user: data }).then((res) => {
-        let data = res.data;
-        data.forEach((item) => {
-          data.sort((a, b) => {
-            if (a.distance < b.distance) return -1;
-            if (a.distance > b.distance) return 1;
-            return 0;
-          });
+        let resData = res.data;
+
+        resData.sort((a, b) => {
+          if (a.distance < b.distance) return -1;
+          if (a.distance > b.distance) return 1;
+          return 0;
         });
 
-        this.openedData2.driver = data[0]
-
-
+        this.openedData2.driver = resData[0]
+        this.driverShow = true;
+      
       })
     },
-
-
 
     userLocation() {
       this.$http('/instCustomerLocation').then((res) => {
@@ -400,7 +395,7 @@ export default {
 
 
     setIcon(data) {
-      return this.icons[data.status == 'online'?  0 : 1];  
+      return this.icons[data.status == 'online' ? 0 : 1];
 
 
     },

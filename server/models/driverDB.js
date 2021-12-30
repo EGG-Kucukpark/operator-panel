@@ -19,6 +19,13 @@ var driverSchema = new Schmea({
         type: String,
         required: true
     },
+    arac: {
+        type: String,
+    },
+    il:{
+        type: String,
+    },
+
     arac_plaka: {
         type: String,
     },

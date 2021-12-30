@@ -143,8 +143,8 @@
                         >{{ data.item.status }}</b-badge>
                     </template>
 
-                    <template #cell(lastupdate)="data">
-                        <span>{{ DateTime.fromISO(data.item.lastupdate).toFormat('dd.MM.yyyy HH:mm') }}</span>
+                    <template #cell(created_at)="data">
+                        <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
                     </template>
                 </b-table>
             </b-col>
@@ -186,7 +186,8 @@ export default {
                 { key: "name", label: "Ad-Soyad", sortable: true, filter: true },
                 { key: "phone", label: "Telefon", sortable: true, filter: true },
                 { key: "status", label: "Durum", sortable: true, filter: true },
-                { key: 'lastupdate', label: 'Son Görülme', sortable: true, filter: true },
+                 { key: "arac", label: "Araç Bilgisi", sortable: true, filter: true },
+                { key: 'created_at', label: 'Kayıt Zamanı', sortable: true, filter: true },
 
                 { key: "actions", label: "Eylemler" },
             ],
@@ -238,12 +239,10 @@ export default {
         getDrivers() {
             this.items = [];
             let isoLogin = JSON.parse(localStorage.getItem("isoLogin"));
-            this.$http('http://195.174.194.97:10000/api/drivers', { params: { userAccessToken: isoLogin.accessToken, userRefreshToken: isoLogin.refreshToken, id: 1 } }).then((response) => {
-                Object.entries(response.data).forEach(([key, value]) => {
-                    this.items.push(value);
-                });
+            this.$http('http://195.174.194.97:2222/drivers').then((response) => {
+                this.items = response.data
             });
-            console.log(this.items);
+          
         },
         calcLoc() {
             this.$http('/calcLoc').then((res) => {

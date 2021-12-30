@@ -42,9 +42,12 @@ router.get('/drivers/application', (req, res) => {
 router.post('/drivers', async (req, res) => {
     let {
         name,
+        photo,
         phone,
         email,
         password,
+        arac,
+        il,
         arac_plaka
     } = req.body;
 
@@ -58,8 +61,11 @@ router.post('/drivers', async (req, res) => {
         DriverSchema.create({
             name,
             phone,
+            photo,
             email,
             password,
+            arac,
+            il,
             arac_plaka
         }).then(() => {
             res.json({
@@ -133,6 +139,7 @@ router.post('/drivers/application',
                 phone,
                 iban,
                 arac,
+                il,
                 referans
             } = fields;
             
@@ -144,6 +151,7 @@ router.post('/drivers/application',
                     iban,
                     file,
                     arac,
+                    il,
                     referans
                 }).then(() => {
                     res.json({

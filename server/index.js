@@ -87,11 +87,21 @@ io.on("connection", socket => {
             phone: data.user.phone,
             status: data.user.status
 
+
+            
         }
   
 
 
         socket.broadcast.emit('driverLoc', driver);
+    });
+
+    socket.on('customerLocationApp', (data) => {
+        
+        console.log(data);
+
+
+        socket.broadcast.emit('customerLocationApp', driver);
     });
 
 

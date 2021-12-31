@@ -48,10 +48,17 @@
                     <template #cell(created_at)="data">
                         <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
                     </template>
+                    <template #cell(arac)="data">
+                        <span>{{ JSON.parse(data.item.arac).arac_marka }}</span>
+                        <br />
+                        <span>{{ JSON.parse(data.item.arac).arac_yil }}</span>
+                        <br />
+
+                        <span>{{ JSON.parse(data.item.arac).arac_model }}</span>
+                    </template>
 
                     <template #cell(file)="data">
-                    
-                        <img :src="require(`../assets/images/drivers/${data.item.file}`)"  alt />
+                        <img :src="require(`../assets/images/drivers/${data.item.file}`)" alt />
                     </template>
 
                     <!--  <template #cell(actions)="data">
@@ -125,7 +132,9 @@ export default {
                 { key: "phone", label: "Telefon", sortable: true, filter: true },
                 { key: "iban", label: "İBAN", sortable: true, filter: true },
                 { key: "referans", label: "referans", sortable: true, filter: true },
-                { key: "file", label: "Fotoğraf", },
+                { key: "arac", label: "Araç Bilgisi", sortable: true, filter: true },
+                { key: "il", label: "İl", sortable: true, filter: true },
+
 
                 { key: "created_at", label: "Kayıt Zamanı", sortable: true, filter: true },
 
@@ -150,7 +159,7 @@ export default {
     },
     methods: {
         veri() {
-            this.$http.get('/drivers/application', { params: { disabled: false } }).then(response => {
+            this.$http.get('/drivers/application').then(response => {
                 this.items = response.data;
 
             });
@@ -189,7 +198,6 @@ export default {
 
 </script>
 <style>
-.newbtn {
+.newbtn .newbtn {
     margin-left: 5px;
 }
-</style>

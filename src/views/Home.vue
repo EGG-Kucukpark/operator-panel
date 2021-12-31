@@ -94,16 +94,15 @@
         <b-col lg="12" md="12">
           <b-card>
             <b-card-title>
-              <h1>Arama Yönlendirme</h1>
+              <h1>Sürücü Yönlendirme</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
                 <v-select
-                  v-model="driverPhone"
+                  v-model="selectedDriver"
                   :filterable="true"
                   label="name"
                   :options="drivers"
-                  :reduce="option => option.phone"
                   placeholder="Lütfen Sürücü Seçiniz "
                 >
                   <template slot="no-options">Sonuç yok.</template>
@@ -117,7 +116,7 @@
                     <div class="selected d-center">{{ option.name }}</div>
                   </template>
                 </v-select>
-                {{ driverPhone }}
+ 
               </b-form-group>
 
               <b-form-group label="Müşteri Numarası" label-for="musteri" class="col-lg-4 col-sm-12">
@@ -128,7 +127,7 @@
                       v-model="PrecustomerPhone"
                     >
                       <option value="+90">+90</option>
-                      <option value="+91">+31</option>
+                      <option value="+91">+91</option>
                     </b-form-select>
                   </b-input-group-prepend>
                   <cleave
@@ -144,10 +143,10 @@
 
               <b-form-group class="col-lg-4 col-sm-12">
                 <b-button
-                  @click="call()"
+                  @click="driverRedirect()"
                   style="margin-top:23px ;"
                   variant="success"
-                >{{ isCalled ? 'Arama Yapılıyor...' : 'Arama Yap' }}</b-button>
+                >{{ isCalled ? 'Sürücüye Yönlendiriliyor...' : 'Sürücüye Yönlendir' }}</b-button>
               </b-form-group>
             </b-card-text>
           </b-card>
@@ -289,7 +288,7 @@ export default {
 
       ],
       isCalled: false,
-      driverPhone: '',
+      selectedDriver: '',
       PrecustomerPhone: '+90',
       customerPhone: '',
       icons: ['../public/../assets/car.png', '../public/../assets/car2.png', '../public/../assets/car3.png'],
@@ -344,6 +343,15 @@ export default {
         this.isCalled = false;
         this.$toastBus.$emit('toast', 'call')
       })
+
+    },
+
+
+    driverRedirect(){
+      let driver = this.selectedDriver;
+      let customer = this.PrecustomerPhone + this.customerPhone.replace(/\s/g, '');
+
+      this.$socket.$emit('customerLocationApp', { customer, driver });
 
     },
 

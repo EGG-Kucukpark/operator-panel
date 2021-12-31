@@ -351,7 +351,7 @@ export default {
       let driver = this.selectedDriver;
       let customer = this.PrecustomerPhone + this.customerPhone.replace(/\s/g, '');
 
-      this.$socket.$emit('customerLocationApp', { customer, driver });
+      this.$socket.emit('customerLocationApp', { customer, driver });
 
     },
 

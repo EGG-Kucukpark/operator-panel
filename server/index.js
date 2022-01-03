@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const axios = require('axios');
 require('./config/database');
 
 
@@ -70,10 +71,20 @@ io.on("connection", socket => {
     })
 
 
-    socket.on('customerLocation', (data) => {
+    socket.on('customerLocation', async (data) => {
         console.log("Yeni Customer Location!");
+        var userLocations = [];
+
+        await axios('/instCustomerLocation').then((res) => {
+            res.data.map((item) => {
+              let currentDate = DateTime.now().toISO();
+              let diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes');
+              item.duration = parseInt(diff.minutes);
+              userLocations.push(item);
+            })
+          })
         
-        socket.broadcast.emit('customerLocation', data); 
+        socket.broadcast.emit('customerLocation', userLocations); 
 
     })
 
@@ -86,23 +97,13 @@ io.on("connection", socket => {
             lng: data.long,
             phone: data.user.phone,
             status: data.user.status
-
-
-            
         }
-  
 
 
         socket.broadcast.emit('driverLoc', driver);
     });
 
-    socket.on('customerLocationApp', (data) => {
-        
-        console.log(data);
-
-
-        socket.broadcast.emit('customerLocationApp', driver);
-    });
+ 
 
 
 });

@@ -42,22 +42,6 @@ require('@core/scss/core.scss')
 require('@/assets/scss/style.scss')
 
 
-const isoLogin = {
-  "id": 1,
-  "attributes": {},
-  "name": "admin",
-  "email": "admin@gmail.com",
-  "readonly": {
-    "type": "Buffer",
-    "data": [
-      0
-    ]
-  },
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6bnVsbCwiaXNBZG1pbiI6bnVsbCwiaWF0IjoxNjM5MDUwNDA5LCJleHAiOjI1MDI5NjQwMDl9.YEL-6E4YDwn6ysvwCt5WCf0OvAWD9DRyVApA5xgiM1U",
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzkwNTA0MDksImV4cCI6MjUwMjk2NDAwOX0.Tvub4a2Re_0ZtOWv9HZ3uD0apDQCYXXmN4ejIuAJmA4"
-}
-localStorage.setItem('isoLogin', JSON.stringify(isoLogin))
-
 
 
 
@@ -68,24 +52,12 @@ const socket = io("http://195.174.194.97:5555");
 axios.defaults.baseURL = 'http://195.174.194.97:2222/'
  
 
-
-
-
-
-
-
 Vue.prototype.$http = axios
 Vue.prototype.$toastBus = toastBus;
 Vue.prototype.$socket = socket;
+Vue.config.productionTip = false;
 
 
-
-
-
-
-
-
-Vue.config.productionTip = false
 new Vue({
   router,
   store,

@@ -116,7 +116,6 @@
                     <div class="selected d-center">{{ option.name }}</div>
                   </template>
                 </v-select>
- 
               </b-form-group>
 
               <b-form-group label="Müşteri Numarası" label-for="musteri" class="col-lg-4 col-sm-12">
@@ -185,8 +184,8 @@
           v-for="m in userLocations"
           :key="m.id"
           :position="{ lat: m.location.degreesLatitude, lng: m.location.degreesLongitude }"
-          :clickable="true"
           icon="../public/../assets/customer.png"
+          :clickable="true"
           @click="openWindow2(m)"
         />
 
@@ -329,6 +328,7 @@ export default {
 
 
     this.$socket.on('customerLocation', (data) => {
+      console.log(data);
       this.userLocation();
     });
 
@@ -347,7 +347,7 @@ export default {
     },
 
 
-    driverRedirect(){
+    driverRedirect() {
       let driver = this.selectedDriver;
       let customer = this.PrecustomerPhone + this.customerPhone.replace(/\s/g, '');
 
@@ -385,7 +385,7 @@ export default {
 
         this.openedData2.driver = resData[0]
         this.driverShow = true;
-      
+
       })
     },
 

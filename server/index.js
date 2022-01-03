@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
+const luxon = require('luxon');
 require('./config/database');
 
 
@@ -81,8 +82,8 @@ io.on("connection", socket => {
 
         await axios('/instCustomerLocation').then((res) => {
             res.data.map((item) => {
-              let currentDate = DateTime.now().toISO();
-              let diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes');
+              let currentDate = luxon.DateTime.now().toISO();
+              let diff = luxon.DateTime.fromISO(currentDate).diff(luxon.DateTime.fromISO(item.createdAt), 'minutes');
               item.duration = parseInt(diff.minutes);
               userLocations.push(item);
             })

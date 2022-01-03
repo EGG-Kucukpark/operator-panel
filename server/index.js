@@ -10,8 +10,6 @@ require('./config/database');
 //Socket
 const socket = require('socket.io');
 const http = require('http').createServer(app);
-const socketPort = 5555;
-const mainPort = 2222;
 
 //Routes & Middleware
 const drivers = require('./routes/drivers');
@@ -24,6 +22,12 @@ const calcLoc = require("./routes/locations")
 
 
 
+//Settings
+const socketPort = 5555;
+const mainPort = 2222;
+axios.defaults.baseURL = 'http://195.174.194.97:2222';
+
+ 
 
 app.listen(mainPort, () => {
     console.log(`listening on ${mainPort}`);

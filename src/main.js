@@ -48,9 +48,11 @@ require('@/assets/scss/style.scss')
 
 
 
-const socket = io("http://195.174.194.97:5555");
+const socket = io("http://195.174.194.97:5555/");
 axios.defaults.baseURL = 'http://195.174.194.97:2222/'
- 
+
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+axios.defaults.headers.common['Access-Control-Allow-Method'] = "GET, PUT, POST, DELETE, OPTIONS"
 
 Vue.prototype.$http = axios
 Vue.prototype.$toastBus = toastBus;

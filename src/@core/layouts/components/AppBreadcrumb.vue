@@ -38,8 +38,6 @@
       </b-row>
     </b-col>
 
-    
-    
   </b-row>
 </template>
 

@@ -1,15 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/userDB');
-const userLocation = require('../models/userLocation');
-const instLocation = require('../models/instLocation');
-const notification = require('../models/notifiDB');
+const User = require('../models/user/userDB');
+const userLocation = require('../models/location/userLocation');
+const instLocation = require('../models/location/instLocation');
+const notification = require('../models/others/notifiDB');
 const luxon = require('luxon');
 
 
 require('dotenv').config();
 
 
+
+//FETCH DATA
 
 router.get('/', (req, res) => {
   User.find().then(users => {
@@ -56,7 +58,21 @@ router.get('/customer/subsInactive', async (req, res) => {
   res.json(usersDeactive);
 });
 
+router.get('/notifications', async (req, res) => {
 
+  notification.find().sort({
+    created_at: -1
+  }).then(notifications => {
+
+    res.json(notifications);
+
+  });
+
+})
+
+
+
+// PUT DATA
 
 router.post('/customer/red', async (req, res) => {
   let {
@@ -135,12 +151,16 @@ router.post('/customer/add', async (req, res) => {
   });
 
 
-  if (oldUser === null) {
+  if (oldUser === null || oldUser === undefined) {
     User.create({
       name,
       phone
+    }).then(user => {
+      res.json(user)
     });
 
+  } else {
+    res.json(oldUser)
   }
 
 });
@@ -154,6 +174,8 @@ router.post('/customer/instLocation', async (req, res) => {
     location
   } = req.body;
 
+  console.log('LOC',location);
+
   instLocation.deleteMany({
     userPhone: phone
   }, (err, result) => {
@@ -164,10 +186,11 @@ router.post('/customer/instLocation', async (req, res) => {
     }
   });
 
+
   instLocation.create({
     userName: name,
     userPhone: phone,
-    location,
+    location: location
 
   });
 
@@ -195,29 +218,33 @@ router.post('/customer/location', async (req, res) => {
 router.post('/notification/add', async (req, res) => {
   console.log(req.body);
 
-  let name = req.body.msg.pushName;
-  let phone = req.body.msg.key.remoteJid.split('@')[0];
+  let name = '';
+  let phone = '';
+  if (req.body.type == 'emergency') {
+    name = req.body.name;
+    phone = req.body.phone;
+  } else {
+    phone = req.body.msg.key.remoteJid.split('@')[0];
+    name = req.body.msg.pushName;
+
+
+  }
+
+  let type = req.body.type;
 
 
 
   notification.create({
     userName: name,
     userPhone: phone,
+    Notype: type,
   });
 
 });
 
-router.get('/notifications', async (req, res) => {
+// UPDATE DATA
 
-  notification.find().sort({
-    created_at: -1
-  }).then(notifications => {
 
-    res.json(notifications);
-
-  });
-
-})
 
 router.put('/notifications/readAll', async (req, res) => {
 
@@ -234,8 +261,39 @@ router.put('/notifications/readAll', async (req, res) => {
 
 })
 
+router.put('/customer/update', async (req, res) => {
+
+  User.findByIdAndUpdate(req.body.id, {
+    kvkk: req.body.kvkk
+  }).catch(err => {
+    console.log(err);
+  })
+
+});
 
 
+
+// DELETE DATA
+
+
+router.delete('/customer/instLocation', (req, res) => {
+
+  console.log('Delete', req.query);
+
+  instLocation.deleteOne({
+      userPhone: req.query.phone
+    }, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+      }
+    }
+
+
+
+  )
+})
 
 
 module.exports = router;

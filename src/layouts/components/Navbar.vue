@@ -3,12 +3,17 @@
     <!-- Nav Menu Toggler -->
     <ul class="nav navbar-nav d-xl-none">
       <li class="nav-item">
-        <b-link class="nav-link" @click="toggleVerticalMenuActive">
-          <feather-icon icon="MenuIcon" size="21" />
+        <b-link
+          class="nav-link"
+          @click="toggleVerticalMenuActive"
+        >
+          <feather-icon
+            icon="MenuIcon"
+            size="21"
+          />
         </b-link>
       </li>
     </ul>
-   
 
     <!-- Left Col -->
     <div
@@ -18,7 +23,7 @@
     </div>
 
     <b-navbar-nav class="nav align-items-center ml-auto">
-  
+
       <dark-Toggler class="d-none d-lg-block" />
       <notification-dropdown />
       <user-dropdown />
@@ -27,11 +32,12 @@
 </template>
 
 <script>
-import { BDropdownItem, BLink, BNavbarNav } from "bootstrap-vue";
-import locale from "./com/loc.vue";
-import DarkToggler from "./com/DarkToggler.vue";
-import NotificationDropdown from "./com/NotificationDropdown.vue";
-import UserDropdown from "./com/UserDropdown.vue";
+import { BDropdownItem, BLink, BNavbarNav } from 'bootstrap-vue'
+import locale from './com/loc.vue'
+import DarkToggler from './com/DarkToggler.vue'
+import NotificationDropdown from './com/NotificationDropdown.vue'
+import UserDropdown from './com/UserDropdown.vue'
+
 export default {
   components: {
     BLink,
@@ -42,12 +48,12 @@ export default {
     NotificationDropdown,
     UserDropdown,
   },
-  methods: {},
   props: {
     toggleVerticalMenuActive: {
       type: Function,
       default: () => {},
     },
   },
-};
+  methods: {},
+}
 </script>

@@ -3,6 +3,9 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
+const DriverSchema = require('../models/Driver/driverDB');
+
+
 require('dotenv').config({
   path: './.env'
 })
@@ -18,18 +21,16 @@ router.use(bodyParser.urlencoded({
 
 
 
-const DriverSchema = require('../models/driverDB');
+
 
 
 router.post("/login", async (req, res) => {
 
-  // Our login logic starts here
+  
   try {
-    // Get user input
-    const {
-      email,
-      password
-    } = req.body;
+    
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password.toLowerCase();
 
     // Validate user input
     if (!(email && password)) {

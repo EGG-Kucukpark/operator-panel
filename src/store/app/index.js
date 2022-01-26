@@ -1,5 +1,5 @@
 import {
-  $themeBreakpoints
+  $themeBreakpoints,
 } from '@themeConfig'
 
 export default {
@@ -12,19 +12,19 @@ export default {
       pageOptions: [10, 20, 30],
       totalRows: 1,
       currentPage: 1,
-      sortBy: "created_at",
+      sortBy: 'created_at',
       sortDesc: true,
-      sortDirection: "desc",
+      sortDirection: 'desc',
       filter: null,
       filterOn: [],
 
     },
-    drivers:'',
+    drivers: '',
   },
   getters: {
     currentBreakPoint: state => {
       const {
-        windowWidth
+        windowWidth,
       } = state
       if (windowWidth >= $themeBreakpoints.xl) return 'xl'
       if (windowWidth >= $themeBreakpoints.lg) return 'lg'

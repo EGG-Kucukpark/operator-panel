@@ -1,25 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const notificationSchema = new Schema({
-    userPhone: {
+const userCouponsSchema = new Schema({
+
+    phone:{
         type: String,
         required: true
     },
-    userName: {
+    name:{
         type: String,
-        required: true
     },
-    read:{
+    coupoun_code:{
+        type: String,
+    },
+    coupoun_used:{
         type: Boolean,
         default: false
-
     },
-    created_at: {
+    created_at:{
         type: Date,
         default: Date.now
-    }
+    },
+
+
+
 });
 
-var notification = mongoose.model('notifications', notificationSchema);
-module.exports = notification;
+module.exports = mongoose.model('userCoupons', userCouponsSchema);

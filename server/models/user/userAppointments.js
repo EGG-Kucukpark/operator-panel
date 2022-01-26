@@ -5,19 +5,21 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        default: '',
+ 
     },
-    
+
     phone: {
         type: String,
         required: true,
     },
-    disabled:{
-        type: Boolean,
-        default: false,
-        
+    date: {
+        type: String,
     },
- 
+    time: {
+        type: String,
+    },
+    address: {},
+
     created_at: {
         type: Date,
         default: Date.now()
@@ -25,6 +27,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-const User = mongoose.model('customers', userSchema);
+const userAppointment = mongoose.model('userappointments', userSchema);
 
-module.exports = User;
+module.exports = userAppointment;

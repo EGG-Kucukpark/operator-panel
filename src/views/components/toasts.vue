@@ -1,94 +1,123 @@
 <script>
-import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import toastBus from '@/eventBus'
+
 export default {
-    components: {
-        ToastificationContent
+  components: {
+    ToastificationContent,
+  },
+  mounted() {
+    toastBus.$on('toast', data => {
+      console.log(data)
+      data.type === 'customer' ? this.notification(data) : null
+      data.type === 'Konum' ? this.konum(data) : null
+      data.type === 'success' ? this.success(data) : null
+      data.type === 'error' ? this.error(data) : null
+      data.type === 'redirect' ? this.call(data) : null
+      data.type === 'Konumiptal' ? this.konumiptal(data) : null
+      data.type === 'emergency' ? this.emergency(data) : null
+    })
+  },
+
+  methods: {
+
+    success() {
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top-right',
+        props: {
+          title: 'İşlem Durumu ',
+          icon: 'BriefcaseIcon',
+          variant: 'success',
+          text: ' İşlem Başarılı.',
+        },
+      })
     },
-    mounted() {
 
-        toastBus.$on('toast', (data) => {
-
-            if (typeof (data) === "object") { this.notification(data) } else {
-                switch (data) {
-                    case 'success':
-                        this.basarili()
-                        break;
-                    case "call":
-                        this.call()
-                        break;
-                    default:
-                        this.basarisiz()
-                        break;
-
-                }
-            }
-
-
-        }
-
-        );
+    error() {
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top-right',
+        props: {
+          title: 'Yeni Mesaj! ',
+          icon: 'BriefcaseIcon',
+          variant: 'danger',
+          text: 'İşlem Başarısız.',
+        },
+      })
     },
 
+    emergency() {
+      const audio = new Audio('/audio/emergency.mp3')
+      audio.play()
 
-    methods: {
-
-        basarili() {
-
-            this.$toast({
-                component: ToastificationContent,
-                position: "top-right",
-                props: {
-                    title: `İşlem Durumu `,
-                    icon: "BriefcaseIcon",
-                    variant: "success",
-                    text: ` İşlem Başarılı.`,
-                },
-            });
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top-right',
+        props: {
+          title: 'İşlem Durumu ',
+          icon: 'BriefcaseIcon',
+          variant: 'danger',
+          text: 'Şöför Alarm Verdi!!!!',
         },
+      })
+    },
 
-        basarisiz() {
-            this.$toast({
-                component: ToastificationContent,
-                position: "top-right",
-                props: {
-                    title: `Yeni Mesaj! `,
-                    icon: "BriefcaseIcon",
-                    variant: "danger",
-                    text: `İşlem Başarısız.`,
-                },
-            });
+    notification(data) {
+      const audio = new Audio('/audio/notification.mp3')
+      audio.play()
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top',
+        props: {
+          title: 'Yeni Mesaj! ',
+          icon: 'MessageSquareIcon',
+          variant: 'warning',
+          text: `${data.msg.pushName} (${data.msg.key.remoteJid.slice(0, data.msg.key.remoteJid.indexOf('@'))}), tarafından yeni mesaj geldi!`,
         },
+      })
+    },
 
-        notification(data) {
-            var audio = new Audio('/audio/notification.mp3');
-            audio.play();
-            this.$toast({
-                component: ToastificationContent,
-                position: "top",
-                props: {
-                    title: `Yeni Mesaj! `,
-                    icon: "MessageSquareIcon",
-                    variant: "warning",
-                    text: `${data.pushName} (${data.key.remoteJid.slice(0, data.key.remoteJid.indexOf('@'))}), tarafından yeni mesaj geldi!`,
-                },
-            });
+    konum(data) {
+      const audio = new Audio('/audio/notification.mp3')
+      audio.play()
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top',
+        props: {
+          title: 'Yeni Konum! ',
+          icon: 'MessageSquareIcon',
+          variant: 'warning',
+          text: `${data.msg.pushName} (${data.msg.key.remoteJid.slice(0, data.msg.key.remoteJid.indexOf('@'))}), tarafından yeni konum geldi!`,
         },
+      })
+    },
 
-        call() {
-
-            this.$toast({
-                component: ToastificationContent,
-                position: "top",
-                props: {
-                    title: `Arama Yapıldı! `,
-                    icon: "PhoneIcon",
-                    variant: "success",
-                    text: `Arama Başarıyla Gerçekleşti.`,
-                },
-            });
+    konumiptal(data) {
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top-right',
+        props: {
+          title: 'Yeni Uyarı! ',
+          icon: 'BriefcaseIcon',
+          variant: 'danger',
+          text: `${data.msg.pushName} (${data.msg.key.remoteJid.slice(0, data.msg.key.remoteJid.indexOf('@'))}), Müşteri Taksi İsteğini reddetti.`,
         },
+      })
+    },
+    call() {
+      this.$toast({
+        component: ToastificationContent,
+        position: 'top',
+        props: {
+          title: 'Yönlendirme Yapıldı! ',
+          icon: 'PhoneIcon',
+          variant: 'success',
+          text: 'Müşteri Başarıyla Yönlendirildi.',
+        },
+      })
+    },
 
-    }
+  },
 }
 </script>

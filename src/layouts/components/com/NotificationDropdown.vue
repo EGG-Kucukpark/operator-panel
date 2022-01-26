@@ -1,8 +1,12 @@
 <template>
-  <b-nav-item-dropdown class="dropdown-notification mr-25" menu-class="dropdown-menu-media" right>
+  <b-nav-item-dropdown
+    class="dropdown-notification mr-25"
+    menu-class="dropdown-menu-media"
+    right
+  >
     <template #button-content>
       <feather-icon
-        :badge="notifications.length"
+        :badge="notifications.slice(0, 15).length"
         badge-classes="bg-danger"
         class="text-body"
         icon="BellIcon"
@@ -13,8 +17,15 @@
     <!-- Header -->
     <li class="dropdown-menu-header">
       <div class="dropdown-header d-flex">
-        <h4 class="notification-title mb-0 mr-auto">Bildirimler</h4>
-        <b-badge pill variant="light-primary">{{ notifications.length }} Yeni Bildirim</b-badge>
+        <h4 class="notification-title mb-0 mr-auto">
+          Bildirimler
+        </h4>
+        <b-badge
+          pill
+          variant="light-primary"
+        >
+          {{ notifications.slice(0, 15).length }} Yeni Bildirim
+        </b-badge>
       </div>
     </li>
 
@@ -23,10 +34,15 @@
       class="scrollable-container media-list scroll-area"
       tagname="li"
     >
-      <b-link v-for="item in notifications" :key="item._id">
+      <b-link
+        v-for="item in notifications.slice(0, 15)"
+        :key="item._id"
+      >
         <b-media>
           <p class="media-heading">
-            <span class="font-weight-bolder">{{ item.userName }}({{ item.userPhone }}) Müşteri Hizmetleri Talep Etti.</span>
+            <span
+              class="font-weight-bolder"
+            >{{ item.userName }}({{ item.userPhone }}) {{ returnMsg(item.Notype) }}</span>
           </p>
           <small
             class="notification-text"
@@ -34,11 +50,6 @@
         </b-media>
       </b-link>
     </vue-perfect-scrollbar>
-
-    <!-- Cart Footer -->
-    <li class="dropdown-menu-footer">
-      <b-button variant="primary" block>Tümünü oku</b-button>
-    </li>
   </b-nav-item-dropdown>
 </template>
 
@@ -48,25 +59,14 @@ import Ripple from 'vue-ripple-directive'
 import { ref } from 'vue'
 import { DateTime } from 'luxon'
 
-
-
 export default {
   components: {
     VuePerfectScrollbar,
 
   },
-
-  mounted() {
-    this.$socket.on('notification', (data) => {
-      this.notification(data)
-    })
-
+  directives: {
+    Ripple,
   },
-  created() {
-    this.notification();
-  },
-
-
 
   data() {
     return {
@@ -77,22 +77,33 @@ export default {
       perfectScrollbarSettings: {
         maxScrollbarLength: 60,
         wheelPropagation: false,
-      }
+      },
+
+      messages: ['bildirim talebinde bulundu.', 'konumunu attı.', 'taksi iptal etti.'],
 
     }
   },
-  directives: {
-    Ripple,
+
+  mounted() {
+    this.$socket.on('notification', data => {
+      this.notification(data)
+    })
+  },
+  created() {
+    this.notification()
   },
   methods: {
     notification(data) {
-      this.$http.get('/notifications').then((response) => {
+      this.$http.get('/notifications').then(response => {
         this.notifications = response.data
-
       })
-    }
+    },
 
-  }
+    returnMsg(data) {
+      return this.messages[data == 'customer' ? 0 : data == 'Konum' ? 1 : data == 'Konumiptal' ? 2 : 0]
+    },
+
+  },
 
 }
 </script>

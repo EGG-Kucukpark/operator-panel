@@ -14,6 +14,12 @@ export default [
     route: 'customers',
     icon: 'UsersIcon',
   },
+
+  {
+    title: 'Sürüşler',
+    route: 'trips',
+    icon: 'LayersIcon',
+  },
   {
     title: 'Güncel Randevular',
     route: 'appointments',

@@ -10,11 +10,11 @@
 <script>
 import useAppConfig from '@core/app-config/useAppConfig'
 import { computed } from '@vue/composition-api'
-import { BNavItem,BLink, } from 'bootstrap-vue'
+import { BNavItem, BLink } from 'bootstrap-vue'
 
 export default {
   components: {
-    BNavItem,BLink,
+    BNavItem, BLink,
   },
   setup() {
     const { skin } = useAppConfig()

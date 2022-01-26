@@ -15,12 +15,11 @@
               user.role == "User"
                 ? "Standart Kullanıcı"
                 : user.role == "Ortak"
-                ? "İş Ortağı"
-                : user.role == "Yetkili"
-                ? "Yetkili"
-                : "Admin"
-            }}</span
-          >
+                  ? "İş Ortağı"
+                  : user.role == "Yetkili"
+                    ? "Yetkili"
+                    : "Admin"
+            }}</span>
         </div>
         <b-avatar
           size="40"
@@ -36,12 +35,20 @@
         :to="{ path: '/profil' }"
         link-class="d-flex align-items-center"
       >
-        <feather-icon size="16" icon="UserIcon" class="mr-50" />
+        <feather-icon
+          size="16"
+          icon="UserIcon"
+          class="mr-50"
+        />
         <span>Profilim</span>
       </b-dropdown-item>
 
       <b-dropdown-item link-class="d-flex align-items-center">
-        <feather-icon size="16" icon="MailIcon" class="mr-50" />
+        <feather-icon
+          size="16"
+          icon="MailIcon"
+          class="mr-50"
+        />
         <span>Inbox</span>
       </b-dropdown-item>
 
@@ -49,22 +56,33 @@
         :to="{ path: '/todo' }"
         link-class="d-flex align-items-center"
       >
-        <feather-icon size="16" icon="CheckSquareIcon" class="mr-50" />
+        <feather-icon
+          size="16"
+          icon="CheckSquareIcon"
+          class="mr-50"
+        />
         <span>Görevlerim</span>
       </b-dropdown-item>
 
       <b-dropdown-divider />
 
       <b-dropdown-item
-        @click.prevent="logout"
         link-class="d-flex align-items-center"
+        @click.prevent="logout"
       >
-        <feather-icon size="16" icon="LogOutIcon" class="mr-50" />
+        <feather-icon
+          size="16"
+          icon="LogOutIcon"
+          class="mr-50"
+        />
         <span>Çıkış</span>
       </b-dropdown-item>
     </b-nav-item-dropdown>
 
-    <portal-target @change="degisiklik" name="navbar"> </portal-target>
+    <portal-target
+      name="navbar"
+      @change="degisiklik"
+    />
   </div>
 </template>
 
@@ -75,7 +93,7 @@ import {
   BDropdownDivider,
   BAvatar,
   BLink,
-} from "bootstrap-vue";
+} from 'bootstrap-vue'
 
 export default {
   components: {
@@ -88,34 +106,33 @@ export default {
 
   data() {
     return {
-      user: JSON.parse(localStorage.getItem("user")),
-    };
+      user: JSON.parse(localStorage.getItem('user')),
+    }
   },
   created() {},
   methods: {
     logout() {
       this.$http(
-        "https://ipgeolocation.abstractapi.com/v1/?api_key=b2a2f19c99f142a598d01b3a0826266b"
-      ).then((response) => {
-        this.$http.post("/api/log", {
+        'https://ipgeolocation.abstractapi.com/v1/?api_key=b2a2f19c99f142a598d01b3a0826266b',
+      ).then(response => {
+        this.$http.post('/api/log', {
           id: this.user.id,
           name: this.user.name,
           ip: response.data.ip_address,
           city: response.data.region,
-          islem: "Çıkış Yapıldı",
+          islem: 'Çıkış Yapıldı',
           country: response.data.flag.png,
-        });
-      });
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
+        })
+      })
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
 
-      this.$router.push("/login");
+      this.$router.push('/login')
     },
 
     degisiklik() {
-      this.user = JSON.parse(localStorage.getItem("user"));
+      this.user = JSON.parse(localStorage.getItem('user'))
     },
   },
-};
+}
 </script>
-

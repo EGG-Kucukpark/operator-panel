@@ -3,8 +3,21 @@
     <template>
       <!-- First Row -->
       <b-row>
-        <b-col cols="12" xl="12" lg="8" md="12">
+        <b-col
+          cols="12"
+          xl="12"
+          lg="8"
+          md="12"
+        >
           <driver-view-user-info-card :user-data="userData" />
+        </b-col>
+        <b-col
+          cols="12"
+          xl="12"
+          lg="8"
+          md="12"
+        >
+          <driver-view-trips-table :user-data="userData" />
         </b-col>
       </b-row>
     </template>
@@ -12,26 +25,30 @@
 </template>
 
 <script>
-import { ref } from '@vue/composition-api'
-
 
 import DriverViewUserInfoCard from './DriverViewUserInfoCard.vue'
-
+import DriverViewTripsTable from './DriverViewTripsTable.vue'
 
 export default {
   components: {
-
     DriverViewUserInfoCard,
-
+    DriverViewTripsTable,
   },
-  setup() {
-    const userData = ref(null)
-
-
+  data() {
     return {
-      userData,
+      userData: '',
     }
   },
+  mounted() {
+    this.$http(`drivers/${this.$route.params.id}`, {
+      params: {
+        id: this.$route.params.id,
+      },
+    }).then(response => {
+      this.userData = response.data
+    })
+  },
+
 }
 </script>
 

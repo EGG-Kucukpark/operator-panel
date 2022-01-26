@@ -1,5 +1,9 @@
 <template>
-  <div id="app" class="h-100" :class="[skinClasses]">
+  <div
+    id="app"
+    class="h-100"
+    :class="[skinClasses]"
+  >
     <component :is="layout">
       <router-view />
     </component>
@@ -9,14 +13,13 @@
 
 <script>
 
-
 // This will be populated in `beforeCreate` hook
 import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
 import { provideToast } from 'vue-toastification/composition'
 import { watch } from '@vue/composition-api'
 import useAppConfig from '@core/app-config/useAppConfig'
-import toasts from '@/views/components/toasts'
 import { useWindowSize, useCssVar } from '@vueuse/core'
+import toasts from '@/views/components/toasts'
 import toastBus from '@/eventBus'
 
 import store from '@/store'
@@ -33,28 +36,6 @@ export default {
     toasts,
 
   },
-  mounted() {
-    this.$socket.on('notification', (data) => {
-      this.notification(data)
-    })
-    
-  
-  },
-
-  methods: {
-    
-    notification(data) {
-      Notification.requestPermission(function (result) {
-        if (result === 'granted') {
-          new Notification('Yeni Whatsapp Mesajı', {
-            body: 'Kullanıcı Müşteri Temsilcisi Talebinde Bulundu',
-          });
-        }
-        toastBus.$emit('toast', data)
-      })
-    }
-
-  },
 
   computed: {
     layout() {
@@ -65,7 +46,13 @@ export default {
       return this.$store.state.appConfig.layout.type
     },
   },
+  mounted() {
+    this.$socket.on('notification', data => {
+      this.notification(data)
+    }),
 
+    console.log('App mounted')
+  },
 
   beforeCreate() {
     // Set colors in theme
@@ -89,6 +76,21 @@ export default {
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
   },
 
+  methods: {
+
+    notification(data) {
+      Notification.requestPermission(result => {
+        if (result === 'granted') {
+          new Notification('Yeni Whatsapp Mesajı', {
+            body: 'Kullanıcı Müşteri Temsilcisi Talebinde Bulundu',
+          })
+        }
+
+        toastBus.$emit('toast', data)
+      })
+    },
+
+  },
 
   setup() {
     const { skin, skinClasses } = useAppConfig()

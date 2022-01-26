@@ -1,32 +1,81 @@
 const express = require('express');
 const router = express.Router();
-const DriverSchema = require('../models/driverDB');
-const DriverAppSchema = require('../models/driverAppDB');
+const fs = require('fs');
+const bcrypt = require("bcryptjs");
+
+const formidable = require('formidable');
 const bodyParser = require('body-parser');
 
-const fs = require('fs');
-const multer = require('multer');
-const path = require("path");
-const formidable = require('formidable');
+
+const DriverSchema = require('../models/Driver/driverDB');
+const DriverAppSchema = require('../models/Driver/driverAppDB');
+const DriverScoreSchema = require('../models/Driver/driverScore');
+const DriverStart = require('../models/Driver/driverStart');
+const trips = require('../models/Trips/tripDB')
 
 
 
-const upload = multer({
-    dest: "/public/uploads/",
-
-});
 
 router.use(bodyParser());
 
+
+
+//  FETCH DATA
 router.get('/drivers', (req, res) => {
-    DriverSchema.find((err, drivers) => {
+
+    DriverSchema.find({}, (err, data) => {
         if (err) {
             console.log(err);
         } else {
-            res.json(drivers);
+            res.send(data);
         }
     });
+
+    /* DriverScoreSchema.find((err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            driverScore.push(data);
+        }
+    });
+
+
+    drivers.filter(driver => {
+            driverScore.filter(score => {
+                if (driver._id == driverScore.driver_id) {
+                    driver.rating = driverScore.rating;
+
+                } else {
+                    driver.rating = 0;
+                }
+            });
+        }
+
+
+    ).then(() => {
+        res.send(drivers);
+    });
+ */
+
+
+
 });
+
+
+
+router.get('/drivers/:id', async (req, res) => {
+
+    let general = await DriverSchema.findById(req.params.id);
+    let trip = await trips.find();
+   
+
+    res.send({general, trip});
+
+
+
+})
+
+
 
 router.get('/drivers/application', (req, res) => {
     DriverAppSchema.find((err, drivers) => {
@@ -39,6 +88,9 @@ router.get('/drivers/application', (req, res) => {
 });
 
 
+
+// ADD DATA
+
 router.post('/drivers', async (req, res) => {
     let {
         name,
@@ -50,8 +102,7 @@ router.post('/drivers', async (req, res) => {
         il,
         arac_plaka
     } = req.body;
-
-    console.log(req.body);
+    encryptedPassword = await bcrypt.hash(password, 10);
 
     let oldUser = await DriverSchema.findOne({
         phone
@@ -63,11 +114,13 @@ router.post('/drivers', async (req, res) => {
             phone,
             photo,
             email,
-            password,
+            password: encryptedPassword,
             arac,
             il,
             arac_plaka
-        }).then(() => {
+        }).then((data) => {
+
+
             res.json({
                 success: true,
                 message: 'Driver added successfully'
@@ -85,45 +138,39 @@ router.post('/drivers', async (req, res) => {
 
 });
 
-router.get('/drivers/:id', (req, res) => {
-    DriverSchema.findById(req.params.id, (err, driver) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(driver);
-        }
+
+router.post('/drivers/score', (req, res) => {
+    let {
+        driver_id,
+        rating,
+        review
+    } = req.body;
+
+
+
+
+
+    DriverScoreSchema.create({
+        driver_id,
+        rating,
+        review
+    }).then(() => {
+        res.json({
+            success: true,
+            message: 'Driver score added successfully'
+        });
     });
+
+
 
 })
-
-router.delete('/drivers/:id', (req, res) => {
-    DriverSchema.findByIdAndRemove(req.params.id, (err, driver) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(driver);
-        }
-    });
-});
-
-router.put('/drivers/:id', (req, res) => {
-    DriverSchema.findByIdAndUpdate(req.params.id, req.body, {
-        new: true
-    }, (err, driver) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(driver);
-        }
-    });
-
-});
 
 
 router.post('/drivers/application',
     (req, res) => {
 
-        var form = new formidable.IncomingForm();
+        const form = new formidable.IncomingForm();
+        console.log(req.body);
         form.parse(req, function (err, fields, files) {
             const tempPath = files.photo.filepath;
             const targetPath = "src/assets/images/drivers/" + files.photo.originalFilename;
@@ -142,23 +189,28 @@ router.post('/drivers/application',
                 il,
                 referans
             } = fields;
-            
-            
+
+
             let file = files.photo.originalFilename;
-                DriverAppSchema.create({
-                    name,
-                    phone,
-                    iban,
-                    file,
-                    arac,
-                    il,
-                    referans
-                }).then(() => {
-                    res.json({
-                        success: true,
-                        message: 'Driver Application added successfully'
-                    });
-                }); 
+            DriverAppSchema.create({
+                name,
+                phone,
+                iban,
+                file,
+                arac,
+                il,
+                referans
+            }).then(() => {
+                res.json({
+                    success: true,
+                    message: 'Driver Application added successfully'
+                });
+            }).catch(err => {
+                res.json({
+                    success: false,
+                    message: 'Driver Application could not be added'
+                });
+            })
 
 
         });
@@ -169,6 +221,80 @@ router.post('/drivers/application',
 
 
     });
+
+
+router.post('/drivers/calcLocation', (req, res) => {
+
+    let driver = DriverStart.FindOne({
+        _id: req.body.id
+    });
+
+    if (driver) {
+        res.json({
+            success: true,
+            message: 'Driver location added successfully'
+        });
+    }
+
+
+
+    DriverStart.create(req.body).then(() => {
+        res.json({
+            success: true,
+            message: 'Driver Location added successfully'
+        });
+    });
+
+})
+
+
+
+
+// UPDATE DATA
+
+router.put('/drivers', async (req, res) => {
+
+    let data = req.body.params;
+
+    let encryptedPassword = await bcrypt.hash(data.password, 10);
+
+
+    DriverSchema.findByIdAndUpdate(data.id, {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        password: encryptedPassword,
+        arac_plaka: data.arac_plaka
+
+    }).then(() => {
+        res.json({
+            success: true,
+            message: 'Driver updated successfully'
+        });
+    });
+
+
+
+
+});
+
+
+
+
+// DELETE DATA
+
+
+
+router.delete('/drivers/:id', (req, res) => {
+    DriverSchema.findByIdAndRemove(req.params.id, (err, driver) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(driver);
+        }
+    });
+});
+
 
 
 

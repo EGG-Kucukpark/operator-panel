@@ -9,7 +9,7 @@
       >Hey Taksi</b-link>
       <span class="d-none d-sm-inline-block">, Tüm Hakları Saklıdır.</span>
     </span>
- 
+
   </p>
 </template>
 

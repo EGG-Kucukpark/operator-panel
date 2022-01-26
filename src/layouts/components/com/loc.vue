@@ -9,7 +9,6 @@
     <b-dropdown-item
       v-for="localeObj in locales"
       :key="localeObj.locale"
-
     >
       <b-img
         :src="localeObj.img"

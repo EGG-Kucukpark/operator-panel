@@ -1,34 +1,77 @@
 <template>
   <div>
     <b-card no-body>
-      <b-button @mouseenter="$refs.bilgiler.toggle()" variant="success">Detaylar</b-button>
+      <b-button
+        variant="success"
+        @click="$refs.bilgiler.toggle()"
+      >
+        Detaylar
+      </b-button>
     </b-card>
 
-    <b-collapse ref="bilgiler" id="bilgiler">
-      <b-row @mouseleave="$refs.bilgiler.toggle()" class="match-height">
-        <b-col lg="4" sm="12">
+    <b-collapse
+      id="bilgiler"
+      ref="bilgiler"
+    >
+      <b-row class="match-height">
+        <!-- <b-col lg="12" md="12">
+
+          <Cards
+            :drivers="drivers"
+            :userDatas="userDatas"
+            @toParent="center = data, goto(), zoom = 20"
+          />
+
+        </b-col>-->
+
+        <b-col
+          lg="3"
+          sm="12"
+        >
           <b-card>
             <b-card-title>
               <h1>Online Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
-                  <b-media v-if="driver.status == 'online'" no-body>
+                <div
+                  v-for="driver in drivers"
+                  :key="driver.id"
+                  class="transaction-item mb-1"
+                >
+                  <b-media
+                    v-if="driver.status == 'online'"
+                    no-body
+                  >
                     <b-media-aside>
                       <b-avatar
                         rounded
                         size="42"
                         :variant="driver.status == 'online' ? 'success' : 'danger'"
                       >
-                        <feather-icon size="18" icon="Navigation2Icon" />
+                        <feather-icon
+                          size="18"
+                          icon="Navigation2Icon"
+                        />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">{{ driver.name }}</h6>
+                      <h6 class="transaction-title">
+                        {{ driver.name }}
+                      </h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
+
+                    <b-button
+                      variant="flat-primary"
+                      @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
+                    >
+                      <feather-icon
+                        class="mr-1"
+                        icon="MapPinIcon"
+                      />Haritada Göster
+                    </b-button>
                   </b-media>
                 </div>
               </b-card-body>
@@ -36,54 +79,107 @@
           </b-card>
         </b-col>
 
-        <b-col lg="4" sm="12">
+        <b-col
+          lg="3"
+          sm="12"
+        >
           <b-card>
             <b-card-title>
               <h1>Offline Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
-                  <b-media v-if="driver.status == 'offline'" no-body>
+                <div
+                  v-for="driver in drivers"
+                  :key="driver.id"
+                  class="transaction-item mb-1"
+                >
+                  <b-media
+                    v-if="driver.status == 'offline'"
+                    no-body
+                  >
                     <b-media-aside>
                       <b-avatar
                         rounded
                         size="42"
                         :variant="driver.status == 'online' ? 'success' : 'danger'"
                       >
-                        <feather-icon size="18" icon="Navigation2Icon" />
+                        <feather-icon
+                          size="18"
+                          icon="Navigation2Icon"
+                        />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">{{ driver.name }}</h6>
+                      <h6 class="transaction-title">
+                        {{ driver.name }}
+                      </h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
+
+                    <b-button
+                      variant="flat-primary"
+                      @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
+                    >
+                      <feather-icon
+                        class="mr-1"
+                        icon="MapPinIcon"
+                      />Haritada Göster
+                    </b-button>
                   </b-media>
                 </div>
               </b-card-body>
             </b-card-text>
           </b-card>
         </b-col>
-        <b-col lg="4" sm="12">
+        <b-col
+          lg="3"
+          sm="12"
+        >
           <b-card>
             <b-card-title>
               <h1>Meşgul Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
-                  <b-media v-if="driver.status == 'busy'" no-body>
+                <div
+                  v-for="driver in drivers"
+                  :key="driver.id"
+                  class="transaction-item mb-1"
+                >
+                  <b-media
+                    v-if="driver.status == 'busy'"
+                    no-body
+                  >
                     <b-media-aside>
-                      <b-avatar rounded size="42" variant="warning">
-                        <feather-icon size="18" icon="Navigation2Icon" />
+                      <b-avatar
+                        rounded
+                        size="42"
+                        variant="warning"
+                      >
+                        <feather-icon
+                          size="18"
+                          icon="Navigation2Icon"
+                        />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">{{ driver.name }}</h6>
+                      <h6 class="transaction-title">
+                        {{ driver.name }}
+                      </h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
+                    <b-button
+                      variant="flat-primary"
+                      @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
+                    >
+                      <feather-icon
+                        class="mr-1"
+                        icon="MapPinIcon"
+                      />Haritada Göster
+                    </b-button>
                   </b-media>
                 </div>
               </b-card-body>
@@ -91,42 +187,117 @@
           </b-card>
         </b-col>
 
-        <b-col lg="12" md="12">
+        <b-col
+          lg="3"
+          sm="12"
+        >
+          <b-card>
+            <b-card-title>
+              <h1>Müşteriler</h1>
+            </b-card-title>
+            <b-card-text class="row">
+              <b-card-body>
+                <div
+                  v-for="x in userDatas"
+                  :key="x.id"
+                  class="transaction-item mb-1"
+                >
+                  <b-media no-body>
+                    <b-media-aside>
+                      <b-avatar
+                        rounded
+                        size="42"
+                        variant="success"
+                      >
+                        <feather-icon
+                          size="18"
+                          icon="Navigation2Icon"
+                        />
+                      </b-avatar>
+                    </b-media-aside>
+
+                    <b-media-body>
+                      <h6 class="transaction-title">
+                        {{ x.userName }}
+                      </h6>
+                      <small>{{ x.userPhone }}</small> /
+                      <small>{{ x.duration }} DK</small>
+                    </b-media-body>
+                    <b-button
+                      variant="flat-primary"
+                      @click="center = { lat: x.location.degreesLatitude, lng: x.location.degreesLongitude }, goto(), zoom = 20"
+                    >
+                      <feather-icon
+                        class="mr-1"
+                        icon="MapPinIcon"
+                      />Haritada Göster
+                    </b-button>
+                  </b-media>
+                </div>
+              </b-card-body>
+            </b-card-text>
+          </b-card>
+        </b-col>
+
+        <b-col
+          lg="12"
+          md="12"
+        >
           <b-card>
             <b-card-title>
               <h1>Sürücü Yönlendirme</h1>
             </b-card-title>
             <b-card-text class="row">
-              <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
+              <b-form-group
+                class="col-lg-4 col-sm-12"
+                label="Sürücü Numarası"
+                label-for="surucu"
+              >
                 <v-select
                   v-model="selectedDriver"
                   :filterable="true"
                   label="name"
                   :options="drivers"
+                  :selectable="(option) => option.status == 'online'"
                   placeholder="Lütfen Sürücü Seçiniz "
                 >
-                  <template slot="no-options">Sonuç yok.</template>
+                  <template slot="no-options">
+                    Sonuç yok.
+                  </template>
                   <template
+                    v-if="option.status == 'online'"
                     slot="option"
                     slot-scope="option"
-                    v-if="option.status == 'online'"
                   >{{ option.name }}</template>
 
-                  <template slot="selected-option" slot-scope="option">
-                    <div class="selected d-center">{{ option.name }}</div>
+                  <template
+                    slot="selected-option"
+                    slot-scope="option"
+                  >
+                    <div class="selected d-center">
+                      {{ option.name }}
+                    </div>
                   </template>
                 </v-select>
               </b-form-group>
 
-              <b-form-group label="Müşteri Numarası" label-for="musteri" class="col-lg-4 col-sm-12">
+              <b-form-group
+                label="Müşteri Numarası"
+                label-for="musteri"
+                class="col-lg-4 col-sm-12"
+              >
                 <b-input-group>
                   <b-input-group-prepend>
                     <b-form-select
-                      style=" border-top-right-radius:0;  border-bottom-right-radius: 0;"
                       v-model="PrecustomerPhone"
+                      style=" border-top-right-radius:0;  border-bottom-right-radius: 0;"
                     >
-                      <option value="+90">+90</option>
-                      <option value="+91">+91</option>
+                      <option value="+90">
+                        +90
+                      </option>
+                      <option value="+91">
+                        +91
+                      </option>
                     </b-form-select>
                   </b-input-group-prepend>
                   <cleave
@@ -140,11 +311,25 @@
                 </b-input-group>
               </b-form-group>
 
-              <b-form-group class="col-lg-4 col-sm-12">
+              <b-form-group
+                label="Müşteri Notu"
+                label-for="musteri"
+                class="col-lg-4 col-sm-12"
+              >
+                <b-form-input
+                  v-model="note"
+                  placeholder="Müşteri veya Operator notunu giriniz."
+                />
+              </b-form-group>
+
+              <b-form-group
+                style="align-items:center; display:flex; justify-content:center"
+                class="col-12"
+              >
                 <b-button
-                  @click="driverRedirect()"
-                  style="margin-top:23px ;"
+                  style="margin-top:23px;"
                   variant="success"
+                  @click="driverRedirect()"
                 >{{ isCalled ? 'Sürücüye Yönlendiriliyor...' : 'Sürücüye Yönlendir' }}</b-button>
               </b-form-group>
             </b-card-text>
@@ -155,6 +340,8 @@
 
     <b-card no-body>
       <GmapMap
+        id="map"
+        ref="mapRef"
         :options="{
           zoomControl: true,
           mapTypeControl: true,
@@ -166,9 +353,8 @@
           clickableIcons: false,
           styles: myStyles
         }"
-        ref="mapRef"
         :center="center"
-        :zoom="12"
+        :zoom="zoom"
         style="width: 100%; height:87vh"
       >
         <!--    <GmapCluster> -->
@@ -190,27 +376,40 @@
         />
 
         <gmap-info-window
-          @closeclick="window_open = false"
           :opened="window_open"
           :position="infowindow"
           class="infowindow"
+          @closeclick="window_open = false"
         >
-          <div class="infowindow" style="display:flex; flex-direction:column">
+          <div
+            class="infowindow"
+            style="display:flex; flex-direction:column"
+          >
             <h3>{{ openedData.name }}</h3>
             <p>
               {{ openedData.phone }} /
               <a :href="'tel:' + openedData.phone">Arama Yap</a>
             </p>
-            <b-form-rating no-border value="3" readonly show-value inline variant="warning" />
+            <b-form-rating
+              no-border
+              value="3"
+              readonly
+              show-value
+              inline
+              variant="warning"
+            />
           </div>
         </gmap-info-window>
 
         <gmap-info-window
-          @closeclick="window_open2 = false"
           :opened="window_open2"
           :position="infowindow2"
+          @closeclick="window_open2 = false"
         >
-          <div class="infowindow" style="display:flex; flex-direction:column">
+          <div
+            class="infowindow"
+            style="display:flex; flex-direction:column"
+          >
             <h3>{{ openedData2.userName }}</h3>
             <p>
               {{ openedData2.userPhone }} /
@@ -219,17 +418,23 @@
 
             <p style="font-weight:500">
               En yakın Araç :
-              <b-spinner small v-if="!driverShow" variant="second"></b-spinner>
+              <b-spinner
+                v-if="!driverShow"
+                small
+                variant="second"
+              />
               <span v-else>{{ openedData2.driver.name }} / {{ openedData2.driver.distanceText }}</span>
             </p>
 
-            <p style="font-weight:500">Bekleme Süresi: {{ openedData2.duration }} / dk</p>
+            <p style="font-weight:500">
+              Bekleme Süresi: {{ openedData2.duration }} / dk
+            </p>
 
             <b-button
               v-if="openedData2.driver != null"
-              @click="customerPhone = openedData2.userPhone, driverPhone = openedData2.driver.phone, call()"
               variant="success"
-            >{{ openedData2.driver.name }} {{ isCalled ? 'Arama Yapılıyor...' : 'Arama Yönlendir' }}</b-button>
+              @click="driverRedirect2(openedData2.driver, openedData2.userPhone)"
+            >{{ openedData2.driver.name }} Taksi Yönlendir</b-button>
           </div>
         </gmap-info-window>
         <!--   </GmapCluster> -->
@@ -244,14 +449,18 @@ import 'cleave.js/dist/addons/cleave-phone.us'
 import AppTimeline from '@core/components/app-timeline/AppTimeline.vue'
 import AppTimelineItem from '@core/components/app-timeline/AppTimelineItem.vue'
 import axios from 'axios'
-import store from '../store'
 import { DateTime } from 'luxon'
+import store from '../store'
+import Cards from '@/views/components/main/cards.vue'
+
+import toastBus from '@/eventBus'
 
 export default {
   components: {
     Cleave,
     AppTimeline,
     AppTimelineItem,
+    Cards,
 
   },
   data() {
@@ -267,22 +476,26 @@ export default {
       options: {
         phone: {
           phone: true,
-          phoneRegionCode: 'US'
-        }
+          phoneRegionCode: 'US',
+        },
       },
+      zoom: 12,
 
       drivers: [],
       driversSelect: [store.state.app.drivers],
       userLocations: [],
+      userDatas: [],
+      note: '',
+
       myStyles: [
         {
-          featureType: "poi.business",
-          stylers: [{ visibility: "off" }],
+          featureType: 'poi.business',
+          stylers: [{ visibility: 'off' }],
         },
         {
-          featureType: "transit",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }],
+          featureType: 'transit',
+          elementType: 'labels.icon',
+          stylers: [{ visibility: 'off' }],
         },
 
       ],
@@ -290,135 +503,148 @@ export default {
       selectedDriver: '',
       PrecustomerPhone: '+90',
       customerPhone: '',
-      icons: ['../public/../assets/car.png', '../public/../assets/car2.png', '../public/../assets/car3.png'],
+      icons: ['../public/../assets/car.png', '../public/../assets/car2.png', '../public/../assets/car3.png', '../public/../assets/car4.png'],
 
-
-    };
+    }
   },
+
   mounted() {
-
-    this.$socket.on('driverLoc', (data) => {
-
-
+    this.$socket.on('driverLoc', data => {
       if (this.drivers.length == 0) {
-        this.drivers.push(data);
-      }
-      else {
-        var isExist = this.drivers.every((item, index) => {
+        this.drivers.push(data)
+      } else {
+        const isExist = this.drivers.every((item, index) => {
           if (item.id == data.id) {
-            item.lat = data.lat;
-            item.lng = data.lng;
-            item.status = data.status;
-            return false;
+            item.lat = data.lat
+            item.lng = data.lng
+            item.status = data.status
+            return false
           }
-          else {
-            return true;
-          }
+
+          return true
         })
 
         if (isExist) {
-          this.drivers.push(data);
+          this.drivers.push(data)
         }
-
-
       }
+    })
 
+    this.$socket.on('customerLoc', data => {
+      setTimeout(() => {
+        this.userLocation()
+      }, 1000)
+    })
 
-    });
-
-
-    this.$socket.on('customerLocation', (data) => {
-      console.log(data);
-      this.userLocation();
-    });
-
-
-    this.userLocation();
+    this.userLocation()
   },
 
   methods: {
     call() {
-      this.isCalled = true;
-      axios('https://app.turkpark.com.tr/api/callTwo', { params: { driver: this.driverPhone, customer: this.customerPhone.replace(/\s/g, '') } }).then((res) => {
-        this.isCalled = false;
-        this.$toastBus.$emit('toast', 'call')
-      })
-
+      this.isCalled = true
+      axios('https://app.turkpark.com.tr/api/callTwo', { params: { driver: this.driverPhone, customer: this.customerPhone.replace(/\s/g, '') } })
     },
-
 
     driverRedirect() {
-      let driver = this.selectedDriver;
-      let customer = this.PrecustomerPhone + this.customerPhone.replace(/\s/g, '');
+      const driver = this.selectedDriver
+      const customer = this.PrecustomerPhone + this.customerPhone
+      const { note } = this
 
-      this.$socket.emit('customerLocationApp', { customer, driver });
+      const data = {
+        driver,
+        customer: customer.replace(/[ +]/g, ''),
+        note,
+      }
 
+      toastBus.$emit('toast', { type: 'redirect' })
+
+      this.$socket.emit('customerLocationApp', data)
     },
 
+    driverRedirect2(driverData, user) {
+      const driver = driverData
+      const customer = user
+      const { note } = this
 
+      const data = {
+        driver,
+        customer: customer.replace(/[ +]/g, ''),
+        note,
+      }
+
+      toastBus.$emit('toast', { type: 'redirect' })
+      this.$socket.emit('customerLocationApp', data)
+    },
 
     openWindow(m) {
-      this.openedData = m;
-      this.infowindow = { lat: m.lat, lng: m.lng };
-      this.window_open = true;
+      this.openedData = m
+      this.infowindow = { lat: m.lat, lng: m.lng }
+      this.window_open = true
     },
 
     async openWindow2(m) {
-      this.driverShow = false;
-      this.openedData2 = m;
+      this.driverShow = false
+      this.openedData2 = m
       this.infowindow2 = { lat: m.location.degreesLatitude, lng: m.location.degreesLongitude }
-      this.openedData2.driver = null;
-      this.calcLoc(m);
-      this.window_open2 = true;
-
+      this.openedData2.driver = null
+      this.calcLoc(m)
+      this.window_open2 = true
     },
 
     calcLoc(data) {
-      this.$http.post('/calcLoc', { drivers: this.drivers, user: data }).then((res) => {
-        let resData = res.data;
+      const user = {
+        degreesLatitude: data.location.degreesLatitude,
+        degreesLongitude: data.location.degreesLongitude,
+      }
+
+      this.$http.post('/calcLoc', { drivers: this.drivers, user }).then(res => {
+        const resData = res.data
 
         resData.sort((a, b) => {
-          if (a.distance < b.distance) return -1;
-          if (a.distance > b.distance) return 1;
-          return 0;
-        });
+          if (a.distance < b.distance) return -1
+          if (a.distance > b.distance) return 1
+          return 0
+        })
 
         this.openedData2.driver = resData[0]
-        this.driverShow = true;
-
+        this.driverShow = true
       })
     },
 
     userLocation() {
-      this.$http('/instCustomerLocation').then((res) => {
-        res.data.map((item) => {
-          let currentDate = DateTime.now().toISO();
-          let diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes');
-          item.duration = parseInt(diff.minutes);
-          this.userLocations.push(item);
+      this.userLocations = []
+      this.userDatas = []
+
+      this.$http('/instCustomerLocation').then(res => {
+        res.data.map(item => {
+          const currentDate = DateTime.now().toISO()
+          const diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes')
+          item.duration = parseInt(diff.minutes)
+          this.userLocations.push(item)
+          this.userDatas.push(item)
         })
+
+        this.userDatas.reverse()
       })
-
     },
-
 
     setIcon(data) {
-      return this.icons[data.status == 'online' ? 0 : 1];
-
-
+      return this.icons[data.status == 'online' ? 0 : data.status == 'offline' ? 1 : data.status == 'busy' ? 3 : 2]
     },
     setStatus(data) {
-      return data.status == 'open' ? 'Açık' : 'Kapalı';
-
+      return data.status == 'open' ? 'Açık' : 'Kapalı'
     },
     setLocation(data) {
+      return { lat: data.lat, lng: data.lng }
+    },
 
-      return { lat: data.lat, lng: data.lng };
-    }
+    goto() {
+      const container = document.getElementById('map')
+      container.scrollIntoView({ behavior: 'smooth' })
+    },
 
-
-  }
-};
+  },
+}
 </script>
 
 <style>

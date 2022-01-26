@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schmea = mongoose.Schema;
 
-var driverSchema = new Schmea({
+var driverAppSchema = new Schmea({
     name: {
         type: String,
         required: true
@@ -11,22 +11,21 @@ var driverSchema = new Schmea({
         required: true
 
     },
-    email: {
+
+    file: {
         type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
     },
     arac: {
         type: String,
     },
-    il:{
+    iban: {
+        type: String,
+    },
+    il: {
         type: String,
     },
 
-    arac_plaka: {
+    referans: {
         type: String,
     },
     created_at: {
@@ -34,14 +33,8 @@ var driverSchema = new Schmea({
         default: Date.now
 
     },
-    last_update: {
-        type: Date,
-        default: Date.now
-    },
-    token: {
-        type: String
-    }
+
 })
 
-var driver = mongoose.model('driver', driverSchema);
-module.exports = driver;
+var driverApp = mongoose.model('driver_applications', driverAppSchema);
+module.exports = driverApp;

@@ -13,20 +13,12 @@
             <b-input-group-prepend is-text>
               <feather-icon icon="SearchIcon" />
             </b-input-group-prepend>
-            <b-form-input
-              id="filterInput"
-              v-model="filter"
-              type="search"
-              placeholder="........"
-            />
+            <b-form-input id="filterInput" v-model="filter" type="search" placeholder="........" />
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col
-        cols="12"
-        class="table-responsive"
-      >
+      <b-col cols="12" class="table-responsive">
         <b-table
           striped
           hover
@@ -44,10 +36,7 @@
           empty-text="Veri Bulunamadı."
           empty-filtered-text="Veri Bulunamadı."
         >
-          <p
-            style="text-align: center; width: 100%"
-            show-empty
-          >
+          <p style="text-align: center; width: 100%" show-empty>
             >
             <b>Kullanıcı Bulunamadı.</b>
           </p>
@@ -56,18 +45,15 @@
           </template>
           <template #cell(arac)="data">
             <span>{{ JSON.parse(data.item.arac).arac_marka }}</span>
-            <br>
+            <br />
             <span>{{ JSON.parse(data.item.arac).arac_yil }}</span>
-            <br>
+            <br />
 
             <span>{{ JSON.parse(data.item.arac).arac_model }}</span>
           </template>
 
           <template #cell(file)="data">
-            <img
-              :src="require(`../assets/images/drivers/${data.item.file}`)"
-              alt
-            >
+            <img :src="require(`../assets/images/drivers/${data.item.file}`)" alt />
           </template>
 
           <!--  <template #cell(actions)="data">
@@ -98,15 +84,11 @@
                                 <feather-icon size="20" icon="TrashIcon" />
                             </b-button>
                         </div>
-                    </template>-->
+          </template>-->
         </b-table>
       </b-col>
 
-      <b-col
-        md="2"
-        sm="4"
-        class="my-1"
-      >
+      <b-col md="2" sm="4" class="my-1">
         <b-form-group class="mb-0">
           <b-form-select
             id="perPageSelect"
@@ -177,11 +159,11 @@ export default {
       this.totalRows = this.items.length
     }, 500)
 
-    this.$socket.emit('notification', 'xd')
+    this.veri()
   },
   methods: {
     veri() {
-      this.$http.get('/drivers/application').then(response => {
+      this.$http('/application').then(response => {
         this.items = response.data
       })
     },
@@ -189,32 +171,14 @@ export default {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
-    editModal(item) {
-      this.edit = true
-      this.name = item.name
-      this.phone = item.phone
 
-      this.$refs.modal.show()
-    },
-    closeModal() {
-      this.$refs.modal.hide()
-      this.name = null
-      this.phone = null
-    },
 
-    submit() {
-      if (this.edit) {
-        // this.$http('xd')
-      } else {
-        toastBus.$emit('toast', true)
-        // this.$http('xd')
-      }
-    },
+
   },
 }
 
 </script>
 <style>
 .newbtn .newbtn {
-    margin-left: 5px;
+  margin-left: 5px;
 }

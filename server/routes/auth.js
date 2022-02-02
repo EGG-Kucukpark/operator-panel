@@ -29,8 +29,8 @@ router.post("/login", async (req, res) => {
   
   try {
     
-    const email = req.body.email.toLowerCase();
-    const password = req.body.password.toLowerCase();
+    const email = req.body.email.toLowerCase()
+    const password = req.body.password.toLowerCase()
 
     // Validate user input
     if (!(email && password)) {
@@ -74,8 +74,7 @@ router.post("/login", async (req, res) => {
 
 
 router.post("/register", async (req, res) => {
-  console.log(req.body);
-  // Our register logic starts here
+
   try {
     // Get user input
     const {

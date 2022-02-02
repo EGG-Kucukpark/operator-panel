@@ -323,6 +323,7 @@ export default {
       phone: '',
       tc: '',
       password: '',
+      oldpassword: '',
       arac_model: '',
       arac_marka: '',
       arac_yil: '',
@@ -342,6 +343,8 @@ export default {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
+
+
     editModal(item) {
       this.edit = true
       this.id = item._id
@@ -349,7 +352,9 @@ export default {
       this.phone = item.phone
       this.email = item.email
       this.tc = item.tc
+      this.oldpassword = item.password
       this.password = ''
+    
       this.arac_model = item.arac_model
       this.arac_marka = item.arac_marka
       this.arac_yil = item.arac_yil
@@ -392,6 +397,8 @@ export default {
 
     submit() {
       if (this.edit) {
+        let pass = this.password == '' ? this.oldpassword : this.password
+
         this.$http.put('/drivers', {
           params: {
             id: this.id,
@@ -399,7 +406,7 @@ export default {
             email: this.email,
             phone: this.phone,
             tc: this.tc,
-            password: this.password,
+            password: pass,
             arac_model: this.arac_model,
             arac_marka: this.arac_marka,
             arac_yil: this.arac_yil,

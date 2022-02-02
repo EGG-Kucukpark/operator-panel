@@ -67,9 +67,12 @@ router.get('/drivers/:id', async (req, res) => {
 
     let general = await DriverSchema.findById(req.params.id);
     let trip = await trips.find();
-   
 
-    res.send({general, trip});
+
+    res.send({
+        general,
+        trip
+    });
 
 
 
@@ -77,12 +80,12 @@ router.get('/drivers/:id', async (req, res) => {
 
 
 
-router.get('/drivers/application', (req, res) => {
-    DriverAppSchema.find((err, drivers) => {
+router.get('/application', (req, res) => {
+    DriverAppSchema.find({}, (err, data) => {
         if (err) {
             console.log(err);
         } else {
-            res.json(drivers);
+            res.send(data);
         }
     });
 });
@@ -169,61 +172,44 @@ router.post('/drivers/score', (req, res) => {
 router.post('/drivers/application',
     (req, res) => {
 
-        const form = new formidable.IncomingForm();
-        console.log(req.body);
-        form.parse(req, function (err, fields, files) {
-            const tempPath = files.photo.filepath;
-            const targetPath = "src/assets/images/drivers/" + files.photo.originalFilename;
 
-            fs.rename(tempPath, targetPath, err => {
-                if (err) {
-                    return err;
-                }
+
+        let {
+            name,
+            phone,
+            iban,
+            arac,
+            il,
+            referans
+        } = req.body;
+
+
+
+        DriverAppSchema.create({
+            name,
+            phone,
+            iban,
+            arac,
+            il,
+            referans
+        }).then(() => {
+            res.json({
+                success: true,
+                message: 'Driver Application added successfully'
             });
-
-            let {
-                name,
-                phone,
-                iban,
-                arac,
-                il,
-                referans
-            } = fields;
+        }).catch(err => {
+            res.json({
+                success: false,
+                message: 'Driver Application could not be added'
+            });
+        })
 
 
-            let file = files.photo.originalFilename;
-            DriverAppSchema.create({
-                name,
-                phone,
-                iban,
-                file,
-                arac,
-                il,
-                referans
-            }).then(() => {
-                res.json({
-                    success: true,
-                    message: 'Driver Application added successfully'
-                });
-            }).catch(err => {
-                res.json({
-                    success: false,
-                    message: 'Driver Application could not be added'
-                });
-            })
-
-
-        });
-
-
-
-
-
-
-    });
+    })
 
 
 router.post('/drivers/calcLocation', (req, res) => {
+
 
     let driver = DriverStart.FindOne({
         _id: req.body.id
@@ -256,9 +242,12 @@ router.put('/drivers', async (req, res) => {
 
     let data = req.body.params;
 
-    let encryptedPassword = await bcrypt.hash(data.password, 10);
+    let isBcyrpt = await bcrypt.compare(data.password, data.password);
 
 
+    let encryptedPassword = !isBcyrpt ? await bcrypt.hash(data.password, 10) : data.password;
+
+    console.log(isBcyrpt);
     DriverSchema.findByIdAndUpdate(data.id, {
         name: data.name,
         phone: data.phone,
@@ -266,12 +255,14 @@ router.put('/drivers', async (req, res) => {
         password: encryptedPassword,
         arac_plaka: data.arac_plaka
 
-    }).then(() => {
+    }).then((xd) => {
         res.json({
             success: true,
             message: 'Driver updated successfully'
         });
-    });
+    }).catch(err => {
+        console.log(err);
+    })
 
 
 

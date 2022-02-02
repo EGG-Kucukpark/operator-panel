@@ -13,7 +13,18 @@ module.exports = {
     },
   },
   configureWebpack: {
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      }
+    },
+    performance: {
+      hints: false
+    },
     resolve: {
+
+
       alias: {
         '@themeConfig': path.resolve(__dirname, 'themeConfig.js'),
         '@core': path.resolve(__dirname, 'src/@core'),

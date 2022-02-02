@@ -17,6 +17,11 @@ const userCouponsSchema = new Schema({
         type: Boolean,
         default: false
     },
+    main_phone:{
+        type: String,
+        default: null
+        
+    },
     created_at:{
         type: Date,
         default: Date.now

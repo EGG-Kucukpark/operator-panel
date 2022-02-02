@@ -4,8 +4,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 const luxon = require('luxon');
+const path = require('path');
 require('./config/database');
+const fs = require('fs');
 
+
+const certOptions = {
+    key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
+}
 
 
 //Socket
@@ -21,6 +28,7 @@ const general = require("./routes/general");
 const calcLoc = require("./routes/locations")
 const trip = require("./routes/trip");
 const user = require("./routes/user");
+const extarnal = require("./routes/external");
 
 
 
@@ -28,6 +36,7 @@ const user = require("./routes/user");
 const insLocation = require('./models/location/instLocation');
 const allTrips = require('./models/Trips/allTripsDB');
 const tripDb = require('./models/Trips/tripDB');
+
 
 //Settings
 const socketPort = 5555;
@@ -52,6 +61,7 @@ app.use(general);
 app.use(calcLoc);
 app.use(trip)
 app.use(user);
+app.use(extarnal);
 
 
 //Socket
@@ -115,38 +125,49 @@ io.on("connection", socket => {
 
 
 
-    socket.on('customerLocationApp', (data) => {
+    socket.on('customerLocationApp', async (data, callback) => {
 
         var driver = data.driver
 
 
-        insLocation.findOne({
+        const user = await insLocation.findOne({
             userPhone: data.customer
-        }, (err, user) => {
-            if (err) {
-                console.log(err);
-            } else {
-
-                var finalData = {
-                    customer: user,
-                    driver: driver,
-                    note: data.note
-                }
-
-                socket.broadcast.emit('customerLocApp', finalData);
-
-
-            }
         })
 
 
 
+        var nameArry = user.userName.split(" ");
 
+
+        user.userName = nameArry.length > 1 ? nameArry[0] + " " + nameArry[1][0].toUpperCase() + '.' : nameArry[0];
+
+
+        if (user) {
+            var finalData = {
+                customer: user,
+                driver: driver,
+                note: data.note
+            }
+
+            console.log(finalData);
+
+            socket.broadcast.emit('customerLocApp', finalData);
+
+        }
     });
 
 
     socket.on('startTrip', (data) => {
-        console.log(data);
+        insLocation.findOneAndDelete({
+            userPhone: data.userPhone
+        }, (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(data);
+            }
+        })
+
         let tripData = {
             trip_id: data.tripId,
             lng: data.lng,
@@ -155,13 +176,14 @@ io.on("connection", socket => {
             userPhone: data.userPhone,
         }
 
-
-
         allTrips.create(tripData, (err, trip) => {
             if (err) {
                 console.log(err);
             }
         })
+
+
+        socket.broadcast.emit('startTripNot', data);
 
 
     });
@@ -217,6 +239,14 @@ io.on("connection", socket => {
     socket.on('tripMsg', (data) => {
         console.log(data, 'TripMsg');
         socket.broadcast.emit('tripMsg1', data);
+
+    })
+
+
+
+    socket.on('comeTrip', (data) => {
+        console.log(data, 'TripMsg');
+        socket.broadcast.emit('comeTrip1', data);
 
     })
 

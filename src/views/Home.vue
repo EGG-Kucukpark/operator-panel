@@ -1,18 +1,10 @@
 <template>
   <div>
     <b-card no-body>
-      <b-button
-        variant="success"
-        @click="$refs.bilgiler.toggle()"
-      >
-        Detaylar
-      </b-button>
+      <b-button variant="success" @click="$refs.bilgiler.toggle()">Detaylar</b-button>
     </b-card>
 
-    <b-collapse
-      id="bilgiler"
-      ref="bilgiler"
-    >
+    <b-collapse id="bilgiler" ref="bilgiler">
       <b-row class="match-height">
         <!-- <b-col lg="12" md="12">
 
@@ -24,42 +16,27 @@
 
         </b-col>-->
 
-        <b-col
-          lg="3"
-          sm="12"
-        >
+        <b-col lg="3" sm="12">
           <b-card>
             <b-card-title>
               <h1>Online Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div
-                  v-for="driver in drivers"
-                  :key="driver.id"
-                  class="transaction-item mb-1"
-                >
-                  <b-media
-                    v-if="driver.status == 'online'"
-                    no-body
-                  >
+                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
+                  <b-media v-if="driver.status == 'online'" no-body>
                     <b-media-aside>
                       <b-avatar
                         rounded
                         size="42"
                         :variant="driver.status == 'online' ? 'success' : 'danger'"
                       >
-                        <feather-icon
-                          size="18"
-                          icon="Navigation2Icon"
-                        />
+                        <feather-icon size="18" icon="Navigation2Icon" />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">
-                        {{ driver.name }}
-                      </h6>
+                      <h6 class="transaction-title">{{ driver.name }}</h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
 
@@ -67,10 +44,7 @@
                       variant="flat-primary"
                       @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
                     >
-                      <feather-icon
-                        class="mr-1"
-                        icon="MapPinIcon"
-                      />Haritada Göster
+                      <feather-icon class="mr-1" icon="MapPinIcon" />Haritada Göster
                     </b-button>
                   </b-media>
                 </div>
@@ -79,42 +53,27 @@
           </b-card>
         </b-col>
 
-        <b-col
-          lg="3"
-          sm="12"
-        >
+        <b-col lg="3" sm="12">
           <b-card>
             <b-card-title>
               <h1>Offline Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div
-                  v-for="driver in drivers"
-                  :key="driver.id"
-                  class="transaction-item mb-1"
-                >
-                  <b-media
-                    v-if="driver.status == 'offline'"
-                    no-body
-                  >
+                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
+                  <b-media v-if="driver.status === 'offline'" no-body>
                     <b-media-aside>
                       <b-avatar
                         rounded
                         size="42"
                         :variant="driver.status == 'online' ? 'success' : 'danger'"
                       >
-                        <feather-icon
-                          size="18"
-                          icon="Navigation2Icon"
-                        />
+                        <feather-icon size="18" icon="Navigation2Icon" />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">
-                        {{ driver.name }}
-                      </h6>
+                      <h6 class="transaction-title">{{ driver.name }}</h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
 
@@ -122,10 +81,7 @@
                       variant="flat-primary"
                       @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
                     >
-                      <feather-icon
-                        class="mr-1"
-                        icon="MapPinIcon"
-                      />Haritada Göster
+                      <feather-icon class="mr-1" icon="MapPinIcon" />Haritada Göster
                     </b-button>
                   </b-media>
                 </div>
@@ -133,52 +89,38 @@
             </b-card-text>
           </b-card>
         </b-col>
-        <b-col
-          lg="3"
-          sm="12"
-        >
+
+        <b-col lg="3" sm="12">
           <b-card>
             <b-card-title>
               <h1>Meşgul Sürücüler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div
-                  v-for="driver in drivers"
-                  :key="driver.id"
-                  class="transaction-item mb-1"
-                >
-                  <b-media
-                    v-if="driver.status == 'busy'"
-                    no-body
-                  >
+                <div v-for="driver in drivers" :key="driver.id" class="transaction-item mb-1">
+                  <b-media v-if="driver.status === 'busy' || driver.status === 'trip'" no-body>
                     <b-media-aside>
                       <b-avatar
                         rounded
                         size="42"
-                        variant="warning"
+                        :variant="driver.status == 'busy' ? 'warning' : 'primary'"
                       >
                         <feather-icon
                           size="18"
-                          icon="Navigation2Icon"
+                          :icon="driver.status == 'busy' ? 'Navigation2Icon' : 'ChevronsUpIcon'"
                         />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">
-                        {{ driver.name }}
-                      </h6>
+                      <h6 class="transaction-title">{{ driver.name }}</h6>
                       <small>{{ driver.phone }}</small>
                     </b-media-body>
                     <b-button
                       variant="flat-primary"
                       @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
                     >
-                      <feather-icon
-                        class="mr-1"
-                        icon="MapPinIcon"
-                      />Haritada Göster
+                      <feather-icon class="mr-1" icon="MapPinIcon" />Haritada Göster
                     </b-button>
                   </b-media>
                 </div>
@@ -187,39 +129,23 @@
           </b-card>
         </b-col>
 
-        <b-col
-          lg="3"
-          sm="12"
-        >
+        <b-col lg="3" sm="12">
           <b-card>
             <b-card-title>
               <h1>Müşteriler</h1>
             </b-card-title>
             <b-card-text class="row">
               <b-card-body>
-                <div
-                  v-for="x in userDatas"
-                  :key="x.id"
-                  class="transaction-item mb-1"
-                >
+                <div v-for="x in userDatas" :key="x.id" class="transaction-item mb-1">
                   <b-media no-body>
                     <b-media-aside>
-                      <b-avatar
-                        rounded
-                        size="42"
-                        variant="success"
-                      >
-                        <feather-icon
-                          size="18"
-                          icon="Navigation2Icon"
-                        />
+                      <b-avatar rounded size="42" variant="success">
+                        <feather-icon size="18" icon="Navigation2Icon" />
                       </b-avatar>
                     </b-media-aside>
 
                     <b-media-body>
-                      <h6 class="transaction-title">
-                        {{ x.userName }}
-                      </h6>
+                      <h6 class="transaction-title">{{ x.userName }}</h6>
                       <small>{{ x.userPhone }}</small> /
                       <small>{{ x.duration }} DK</small>
                     </b-media-body>
@@ -227,10 +153,7 @@
                       variant="flat-primary"
                       @click="center = { lat: x.location.degreesLatitude, lng: x.location.degreesLongitude }, goto(), zoom = 20"
                     >
-                      <feather-icon
-                        class="mr-1"
-                        icon="MapPinIcon"
-                      />Haritada Göster
+                      <feather-icon class="mr-1" icon="MapPinIcon" />Haritada Göster
                     </b-button>
                   </b-media>
                 </div>
@@ -239,100 +162,83 @@
           </b-card>
         </b-col>
 
-        <b-col
-          lg="12"
-          md="12"
-        >
+        <b-col lg="12" md="12">
           <b-card>
             <b-card-title>
               <h1>Sürücü Yönlendirme</h1>
             </b-card-title>
-            <b-card-text class="row">
-              <b-form-group
-                class="col-lg-4 col-sm-12"
-                label="Sürücü Numarası"
-                label-for="surucu"
-              >
-                <v-select
-                  v-model="selectedDriver"
-                  :filterable="true"
-                  label="name"
-                  :options="drivers"
-                  :selectable="(option) => option.status == 'online'"
-                  placeholder="Lütfen Sürücü Seçiniz "
-                >
-                  <template slot="no-options">
-                    Sonuç yok.
-                  </template>
-                  <template
-                    v-if="option.status == 'online'"
-                    slot="option"
-                    slot-scope="option"
-                  >{{ option.name }}</template>
 
-                  <template
-                    slot="selected-option"
-                    slot-scope="option"
+            <b-form @submit.prevent="driverRedirect">
+              <b-card-text class="row">
+                <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
+                  <v-select
+                    v-model="selectedDriver"
+                    :filterable="true"
+                    label="name"
+                    :required="!selectedDriver"
+                    :options="drivers"
+                    class="style-chooser"
+                    :selectable="(option) => option.status == 'online'"
+                    placeholder="Lütfen Sürücü Seçiniz "
                   >
-                    <div class="selected d-center">
-                      {{ option.name }}
-                    </div>
-                  </template>
-                </v-select>
-              </b-form-group>
+                    <template slot="no-options">Sonuç yok.</template>
+                    <template
+                      v-if="option.status == 'online'"
+                      slot="option"
+                      slot-scope="option"
+                    >{{ option.name }}</template>
 
-              <b-form-group
-                label="Müşteri Numarası"
-                label-for="musteri"
-                class="col-lg-4 col-sm-12"
-              >
-                <b-input-group>
-                  <b-input-group-prepend>
-                    <b-form-select
-                      v-model="PrecustomerPhone"
-                      style=" border-top-right-radius:0;  border-bottom-right-radius: 0;"
-                    >
-                      <option value="+90">
-                        +90
-                      </option>
-                      <option value="+91">
-                        +91
-                      </option>
-                    </b-form-select>
-                  </b-input-group-prepend>
-                  <cleave
-                    id="musteri"
+                    <template slot="selected-option" slot-scope="option">
+                      <div class="selected d-center">{{ option.name }}</div>
+                    </template>
+                  </v-select>
+                </b-form-group>
+
+                <b-form-group
+                  label="Müşteri Numarası"
+                  label-for="musteri"
+                  class="col-lg-4 col-sm-12"
+                >
+                  <v-select
                     v-model="customerPhone"
-                    class="form-control"
-                    :raw="false"
-                    :options="options.phone"
-                    placeholder="1234 567 8900"
-                  />
-                </b-input-group>
-              </b-form-group>
+                    :filterable="true"
+                    label="userPhone"
+                    taggable
+                    :required="!customerPhone"
+                    :options="userDatas"
+                    class="style-chooser"
+                    placeholder="Lütfen Müşteri Seçiniz "
+                  >
+                    <template slot="no-options">Sonuç yok.</template>
 
-              <b-form-group
-                label="Müşteri Notu"
-                label-for="musteri"
-                class="col-lg-4 col-sm-12"
-              >
-                <b-form-input
-                  v-model="note"
-                  placeholder="Müşteri veya Operator notunu giriniz."
-                />
-              </b-form-group>
+                    <template slot="option" slot-scope="option">
+                      <div
+                        class="selected d-center"
+                      >{{ option.userName }} / {{ option.userPhone }} / {{ option.duration }} DK</div>
+                    </template>
 
-              <b-form-group
-                style="align-items:center; display:flex; justify-content:center"
-                class="col-12"
-              >
-                <b-button
-                  style="margin-top:23px;"
-                  variant="success"
-                  @click="driverRedirect()"
-                >{{ isCalled ? 'Sürücüye Yönlendiriliyor...' : 'Sürücüye Yönlendir' }}</b-button>
-              </b-form-group>
-            </b-card-text>
+                    <template slot="selected-option" slot-scope="option">
+                      <div class="selected d-center">{{ option.userName }} / {{ option.userPhone }}</div>
+                    </template>
+                  </v-select>
+                </b-form-group>
+
+                <b-form-group label="Müşteri Notu" label-for="musteri" class="col-lg-4 col-sm-12">
+                  <b-form-input v-model="note" placeholder="Müşteri veya Operator notunu giriniz." />
+                </b-form-group>
+
+                <b-form-group
+                  style="align-items:center; display:flex; justify-content:center"
+                  class="col-12"
+                >
+                  <b-button
+                    style="margin-top:23px;"
+                    variant="success"
+                    type="submit"
+                  >{{ isCalled ? 'Sürücüye Yönlendiriliyor...' : 'Sürücüye Yönlendir' }}</b-button>
+                </b-form-group>
+              </b-card-text>
+            </b-form>
           </b-card>
         </b-col>
       </b-row>
@@ -381,23 +287,13 @@
           class="infowindow"
           @closeclick="window_open = false"
         >
-          <div
-            class="infowindow"
-            style="display:flex; flex-direction:column"
-          >
+          <div class="infowindow" style="display:flex; flex-direction:column">
             <h3>{{ openedData.name }}</h3>
             <p>
               {{ openedData.phone }} /
               <a :href="'tel:' + openedData.phone">Arama Yap</a>
             </p>
-            <b-form-rating
-              no-border
-              value="3"
-              readonly
-              show-value
-              inline
-              variant="warning"
-            />
+            <b-form-rating no-border value="3" readonly show-value inline variant="warning" />
           </div>
         </gmap-info-window>
 
@@ -406,10 +302,7 @@
           :position="infowindow2"
           @closeclick="window_open2 = false"
         >
-          <div
-            class="infowindow"
-            style="display:flex; flex-direction:column"
-          >
+          <div class="infowindow" style="display:flex; flex-direction:column">
             <h3>{{ openedData2.userName }}</h3>
             <p>
               {{ openedData2.userPhone }} /
@@ -418,17 +311,11 @@
 
             <p style="font-weight:500">
               En yakın Araç :
-              <b-spinner
-                v-if="!driverShow"
-                small
-                variant="second"
-              />
+              <b-spinner v-if="!driverShow" small variant="second" />
               <span v-else>{{ openedData2.driver.name }} / {{ openedData2.driver.distanceText }}</span>
             </p>
 
-            <p style="font-weight:500">
-              Bekleme Süresi: {{ openedData2.duration }} / dk
-            </p>
+            <p style="font-weight:500">Bekleme Süresi: {{ openedData2.duration }} / dk</p>
 
             <b-button
               v-if="openedData2.driver != null"
@@ -452,8 +339,11 @@ import axios from 'axios'
 import { DateTime } from 'luxon'
 import store from '../store'
 import Cards from '@/views/components/main/cards.vue'
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { required } from '@validations'
 
 import toastBus from '@/eventBus'
+
 
 export default {
   components: {
@@ -461,12 +351,15 @@ export default {
     AppTimeline,
     AppTimelineItem,
     Cards,
+    ValidationProvider,
+    ValidationObserver
 
   },
   data() {
     return {
       driverShow: false,
       window_open: false,
+      required,
       openedData: '',
       infowindow: { lat: 10.0, lng: 10.0 },
       window_open2: false,
@@ -485,6 +378,7 @@ export default {
       driversSelect: [store.state.app.drivers],
       userLocations: [],
       userDatas: [],
+      errors: [],
       note: '',
 
       myStyles: [
@@ -503,7 +397,7 @@ export default {
       selectedDriver: '',
       PrecustomerPhone: '+90',
       customerPhone: '',
-      icons: ['../public/../assets/car.png', '../public/../assets/car2.png', '../public/../assets/car3.png', '../public/../assets/car4.png'],
+      icons: ['../public/../assets/car-online.png', '../public/../assets/car-offline.png', '../public/../assets/car-trip.png', '../public/../assets/car-busy.png'],
 
     }
   },
@@ -536,10 +430,19 @@ export default {
       }, 1000)
     })
 
+    this.$socket.on('startTripNot', data => {
+      this.userLocation()
+
+    })
+
     this.userLocation()
+
+
   },
 
   methods: {
+
+
     call() {
       this.isCalled = true
       axios('https://app.turkpark.com.tr/api/callTwo', { params: { driver: this.driverPhone, customer: this.customerPhone.replace(/\s/g, '') } })
@@ -547,18 +450,29 @@ export default {
 
     driverRedirect() {
       const driver = this.selectedDriver
-      const customer = this.PrecustomerPhone + this.customerPhone
+      const customer = this.customerPhone.userPhone.replace(/\s/g, '')
       const { note } = this
 
-      const data = {
-        driver,
-        customer: customer.replace(/[ +]/g, ''),
-        note,
+
+
+      if (driver != '' && customer != '') {
+        const data = {
+          driver,
+          customer,
+          note,
+        }
+
+        this.selectedDriver = ''
+        this.customerPhone = ''
+        this.note = ''
+
+        toastBus.$emit('toast', { type: 'redirect' })
+        this.$socket.emit('customerLocationApp', data)
+
+
+      } else {
+        toastBus.$emit('toast', { type: 'error' })
       }
-
-      toastBus.$emit('toast', { type: 'redirect' })
-
-      this.$socket.emit('customerLocationApp', data)
     },
 
     driverRedirect2(driverData, user) {
@@ -592,23 +506,33 @@ export default {
     },
 
     calcLoc(data) {
+
+
       const user = {
         degreesLatitude: data.location.degreesLatitude,
         degreesLongitude: data.location.degreesLongitude,
       }
 
-      this.$http.post('/calcLoc', { drivers: this.drivers, user }).then(res => {
-        const resData = res.data
+      let drivers = this.drivers.map(x => x.status === 'online' ? x : null).filter(x => x !== null)
 
-        resData.sort((a, b) => {
-          if (a.distance < b.distance) return -1
-          if (a.distance > b.distance) return 1
-          return 0
+
+      if (drivers.length > 0) {
+
+        this.$http.post('/calcLoc', { drivers: drivers, user }).then(res => {
+          const resData = res.data
+          resData.sort((a, b) => {
+            if (a.distance < b.distance) return -1
+            if (a.distance > b.distance) return 1
+            return 0
+          })
+
+          this.openedData2.driver = resData[0]
+          this.driverShow = true
         })
 
-        this.openedData2.driver = resData[0]
-        this.driverShow = true
-      })
+      }
+
+
     },
 
     userLocation() {
@@ -620,8 +544,14 @@ export default {
           const currentDate = DateTime.now().toISO()
           const diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes')
           item.duration = parseInt(diff.minutes)
-          this.userLocations.push(item)
-          this.userDatas.push(item)
+
+          if (item.duration < 15) {
+
+            this.userLocations.push(item)
+            this.userDatas.push(item)
+
+          }
+
         })
 
         this.userDatas.reverse()
@@ -647,8 +577,8 @@ export default {
 }
 </script>
 
-<style>
-.infowindow {
+<style >
+.infowi .infowindow {
   width: 250px;
   height: 60px;
   display: flex !important;
@@ -656,3 +586,9 @@ export default {
 
   border-radius: 10px;
 }
+
+.style-chooser .vs__search {
+  height: 28px;
+  border: none;
+}
+</style>

@@ -5,7 +5,7 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: true,
-   
+
     },
 
     phone: {
@@ -13,9 +13,10 @@ const userSchema = new Schema({
         required: true,
     },
 
-    address: {
-  
-        
+    address: {},
+    address_text: {
+        type: String,
+        default: null
     },
 
     address_type: {

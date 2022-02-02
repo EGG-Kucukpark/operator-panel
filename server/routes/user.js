@@ -67,23 +67,16 @@ router.get('/userAddress', (req, res) => {
 
 // GET USER APPOINTMENT
 router.get('/userAppointment', (req, res) => {
+    console.log(req.query.phone)
 
-    if (req.query.phone) {
-        userAppointment.find({
-            customerPhone: req.query.phone
-        }).sort({
-            created_at: -1
-        }).then(data => {
-            res.json(data);
-        })
-    } else {
-        userAppointment.find().sort({
-            created_at: -1
-        }).then(data => {
-            res.json(data);
-        })
+    userAppointment.find({
+        phone: req.query.phone
+    }).sort({
+        created_at: -1
+    }).then(data => {
+        res.json(data);
+    })
 
-    }
 
 })
 
@@ -129,6 +122,7 @@ router.post('/userAddress', (req, res) => {
         name,
         phone,
         address,
+        address_text,
         address_type
     } = req.body;
 
@@ -136,6 +130,7 @@ router.post('/userAddress', (req, res) => {
         name,
         phone,
         address,
+        address_text,
         address_type
     });
 
@@ -202,6 +197,8 @@ router.post('/userAppointment', (req, res) => {
         phone,
         date,
         address,
+        address_text,
+
         time,
 
     } = req.body;
@@ -211,6 +208,8 @@ router.post('/userAppointment', (req, res) => {
         phone,
         date,
         address,
+        address_text,
+
         time,
     }, (err, data) => {
         if (err) {
@@ -264,6 +263,40 @@ router.post('/userCouponsFriend', async (req, res) => {
 
 });
 
+
+
+// UPDATE COPOUONS
+
+router.put('/userCoupons', async (req, res) => {
+
+        let coupon = req.body.coupon_code;
+
+        let mainPhone = await userCoupons.findOne({
+            coupoun_code: coupon.toUpperCase(),
+            coupoun_used: false
+        })
+
+        if (mainPhone) {
+
+            await userCoupons.updateMany({
+                coupoun_code: coupon.toUpperCase(),
+            }, {
+                $set: {
+                    coupoun_used: true,
+                    main_phone: mainPhone.phone
+                }
+            })
+
+        }
+
+
+
+
+
+
+    }
+
+)
 
 
 

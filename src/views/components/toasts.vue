@@ -105,7 +105,7 @@ export default {
         },
       })
     },
-    call() {
+    call(data) {
       this.$toast({
         component: ToastificationContent,
         position: 'top',

@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
- 
+
     },
 
     phone: {
@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     address: {},
+    address_text: {
+        type: String
+    },
 
     created_at: {
         type: Date,

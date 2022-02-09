@@ -47,7 +47,7 @@ export default {
       })
     },
 
-    emergency() {
+    emergency(data) {
       const audio = new Audio('/audio/emergency.mp3')
       audio.play()
 
@@ -58,7 +58,7 @@ export default {
           title: 'İşlem Durumu ',
           icon: 'BriefcaseIcon',
           variant: 'danger',
-          text: 'Şöför Alarm Verdi!!!!',
+          text: `${data.userData.name} / ${data.userData.phone} Alarm Verdi!!!!`,
         },
       })
     },

@@ -227,11 +227,9 @@ router.post('/notification/add', async (req, res) => {
     phone = req.body.msg.key.remoteJid.split('@')[0];
     name = req.body.msg.pushName;
 
-
   }
 
   let type = req.body.type;
-
 
 
   notification.create({

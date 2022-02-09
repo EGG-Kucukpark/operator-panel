@@ -41,15 +41,8 @@ Vue.component('GmapCluster', GmapCluster)
 require('@core/scss/core.scss')
 require('@/assets/scss/style.scss')
 
-
-
-
-
-
-
-
-const socket = io("http://195.174.194.97:5555/");
-axios.defaults.baseURL = 'http://195.174.194.97:2222/'
+const socket = io("https://www.turkpark.com.tr:5555/");
+axios.defaults.baseURL = 'https://www.turkpark.com.tr:2222/'
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 axios.defaults.headers.common['Access-Control-Allow-Method'] = "GET, PUT, POST, DELETE, OPTIONS"

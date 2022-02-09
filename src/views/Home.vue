@@ -139,7 +139,11 @@
                 <div v-for="x in userDatas" :key="x.id" class="transaction-item mb-1">
                   <b-media no-body>
                     <b-media-aside>
-                      <b-avatar rounded size="42" variant="success">
+                      <b-avatar
+                        rounded
+                        size="42"
+                        :variant="x.status == 'online' ? 'success' : 'warning'"
+                      >
                         <feather-icon size="18" icon="Navigation2Icon" />
                       </b-avatar>
                     </b-media-aside>
@@ -168,10 +172,23 @@
               <h1>Sürücü Yönlendirme</h1>
             </b-card-title>
 
+            <div style="margin-left:1px;  align-items:center" class="row">
+              <h1>Otopilot</h1>
+              <b-form-checkbox
+                v-model="autopilot"
+                style="margin-left:10px;"
+                class="custom-control-success"
+                name="check-button"
+                switch
+              />
+              {{ autopilot }}
+            </div>
+
             <b-form @submit.prevent="driverRedirect">
               <b-card-text class="row">
                 <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
                   <v-select
+                    :disabled="autopilot"
                     v-model="selectedDriver"
                     :filterable="true"
                     label="name"
@@ -202,29 +219,60 @@
                   <v-select
                     v-model="customerPhone"
                     :filterable="true"
+                    :disabled="autopilot"
                     label="userPhone"
                     taggable
                     :required="!customerPhone"
-                    :options="userDatas"
+                    :options="customerData"
                     class="style-chooser"
+                    :selectable="isApptoday === false ? (option) => option.status == 'online' : (option) => option.status != ''"
                     placeholder="Lütfen Müşteri Seçiniz "
                   >
+                    <li slot="list-footer" class="pagination">
+                      <b-button
+                        variant="flat-info"
+                        @click="customerData = userDatas, isApptoday = false"
+                      >Güncel Müşteriler</b-button>
+                      <b-button
+                        variant="flat-primary"
+                        @click="customerData = userAppToday, isApptoday = true"
+                      >Randevulu Müşteriler</b-button>
+                    </li>
+
                     <template slot="no-options">Sonuç yok.</template>
 
                     <template slot="option" slot-scope="option">
                       <div
+                        v-if="isApptoday === false"
                         class="selected d-center"
                       >{{ option.userName }} / {{ option.userPhone }} / {{ option.duration }} DK</div>
+
+                      <div
+                        v-else
+                        class="selected d-center"
+                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{option.driver}}</div>
                     </template>
 
                     <template slot="selected-option" slot-scope="option">
-                      <div class="selected d-center">{{ option.userName }} / {{ option.userPhone }}</div>
+                      <div
+                        v-if="isApptoday === false"
+                        class="selected d-center"
+                      >{{ option.userName }} / {{ option.userPhone }}</div>
+                      <div
+                        v-else
+                        class="selected d-center"
+                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{option.driver}}</div>
                     </template>
                   </v-select>
+
                 </b-form-group>
 
                 <b-form-group label="Müşteri Notu" label-for="musteri" class="col-lg-4 col-sm-12">
-                  <b-form-input v-model="note" placeholder="Müşteri veya Operator notunu giriniz." />
+                  <b-form-input
+                    :disabled="autopilot"
+                    v-model="note"
+                    placeholder="Müşteri veya Operator notunu giriniz."
+                  />
                 </b-form-group>
 
                 <b-form-group
@@ -232,6 +280,7 @@
                   class="col-12"
                 >
                   <b-button
+                    :disabled="autopilot"
                     style="margin-top:23px;"
                     variant="success"
                     type="submit"
@@ -294,6 +343,9 @@
               <a :href="'tel:' + openedData.phone">Arama Yap</a>
             </p>
             <b-form-rating no-border value="3" readonly show-value inline variant="warning" />
+            <p
+              v-if="openedData.status == 'disconnect'"
+            >Son Aktif Zamanı: {{ openedData.last_update }}</p>
           </div>
         </gmap-info-window>
 
@@ -366,6 +418,7 @@ export default {
       openedData2: '',
       infowindow2: { lat: 10.0, lng: 10.0 },
       center: { lat: 38.444851, lng: 27.180703 },
+      autopilot: false,
       options: {
         phone: {
           phone: true,
@@ -375,9 +428,13 @@ export default {
       zoom: 12,
 
       drivers: [],
+      driverControl: [],
       driversSelect: [store.state.app.drivers],
       userLocations: [],
       userDatas: [],
+      userAppToday: [],
+      isApptoday: false,
+      customerData: [],
       errors: [],
       note: '',
 
@@ -393,12 +450,18 @@ export default {
         },
 
       ],
+      DateTime,
       isCalled: false,
       selectedDriver: '',
       PrecustomerPhone: '+90',
       customerPhone: '',
-      icons: ['../public/../assets/car-online.png', '../public/../assets/car-offline.png', '../public/../assets/car-trip.png', '../public/../assets/car-busy.png'],
-
+      icons: {
+        online: '../public/../assets/car-online.png',
+        offline: '../public/../assets/car-offline.png',
+        busy: '../public/../assets/car-busy.png',
+        trip: '../public/../assets/car-trip.png',
+        disconnect: '../public/../assets/car-disconnect.png'
+      },
     }
   },
 
@@ -411,6 +474,7 @@ export default {
           if (item.id == data.id) {
             item.lat = data.lat
             item.lng = data.lng
+            item.last_update = data.last_update
             item.status = data.status
             return false
           }
@@ -421,38 +485,61 @@ export default {
         if (isExist) {
           this.drivers.push(data)
         }
+
+
+
       }
     })
+
+    setInterval(() => {
+      this.drivers.filter(item => {
+        if (DateTime.local().minute - item.last_update >= 2) {
+          item.last_update = DateTime.local().toFormat('dd.MM.yyyy HH:mm')
+          item.status = 'disconnect'
+        }
+      })
+
+    }, 1500)
 
     this.$socket.on('customerLoc', data => {
       setTimeout(() => {
         this.userLocation()
-      }, 1000)
+      }, 100)
+    })
+
+    this.$socket.on('customerLocApp', data => {
+      console.log('customerLocApp')
+      console.log(data)
     })
 
     this.$socket.on('startTripNot', data => {
       this.userLocation()
+    })
+
+    this.$socket.on('comeTripMsg', data => {
+      this.userDatas.filter(item => {
+        item.userPhone == data.customerPhone ? item.status = 'trip' : ''
+      })
 
     })
 
     this.userLocation()
+    this.userAppointments()
+
 
 
   },
 
   methods: {
 
+    updateUser() {
 
-    call() {
-      this.isCalled = true
-      axios('https://app.turkpark.com.tr/api/callTwo', { params: { driver: this.driverPhone, customer: this.customerPhone.replace(/\s/g, '') } })
     },
 
-    driverRedirect() {
+    async driverRedirect() {
       const driver = this.selectedDriver
       const customer = this.customerPhone.userPhone.replace(/\s/g, '')
       const { note } = this
-
 
 
       if (driver != '' && customer != '') {
@@ -505,8 +592,7 @@ export default {
       this.window_open2 = true
     },
 
-    calcLoc(data) {
-
+    async calcLoc(data) {
 
       const user = {
         degreesLatitude: data.location.degreesLatitude,
@@ -535,11 +621,52 @@ export default {
 
     },
 
-    userLocation() {
+
+    async calcLoc2(data) {
+
+      const user = {
+        degreesLatitude: data.location.degreesLatitude,
+        degreesLongitude: data.location.degreesLongitude,
+      }
+
+      let drivers = this.drivers.map(x => x.status === 'online' ? x : null).filter(x => x !== null)
+      let result = []
+
+
+      if (drivers.length > 0) {
+
+        await this.$http.post('/calcLoc', { drivers: drivers, user }).then(res => {
+          const resData = res.data
+          resData.sort((a, b) => {
+            if (a.distance < b.distance) return -1
+            if (a.distance > b.distance) return 1
+            return 0
+          })
+
+
+          result = resData
+        })
+
+
+        return result
+      }
+
+
+    },
+
+    async userAppointments() {
+      const { userAppToday } = this
+
+      await this.$http.get('https://www.turkpark.com.tr:2222/allAppointments?date=today',).then(res => {
+        this.userAppToday = res.data
+      })
+    },
+
+    async userLocation() {
       this.userLocations = []
       this.userDatas = []
 
-      this.$http('/instCustomerLocation').then(res => {
+      this.$http('/instCustomerLocation').then(async (res) => {
         res.data.map(item => {
           const currentDate = DateTime.now().toISO()
           const diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), 'minutes')
@@ -550,16 +677,39 @@ export default {
             this.userLocations.push(item)
             this.userDatas.push(item)
 
-          }
 
+          }
         })
 
         this.userDatas.reverse()
+
+
+        this.customerData = this.userDatas
+
+
+
+        if (this.autopilot) {
+          this.selectedDriver = null;
+          this.selectedDriver = await this.calcLoc2(this.userDatas[0])
+
+          this.customerPhone = this.userDatas[0]
+
+          let data = {
+            drivers: this.selectedDriver,
+            customer: this.customerPhone.userPhone
+          }
+
+          this.$socket.emit('autoTrip', data)
+
+        }
+
+
       })
     },
 
     setIcon(data) {
-      return this.icons[data.status == 'online' ? 0 : data.status == 'offline' ? 1 : data.status == 'busy' ? 3 : 2]
+
+      return this.icons[data.status]
     },
     setStatus(data) {
       return data.status == 'open' ? 'Açık' : 'Kapalı'
@@ -567,7 +717,6 @@ export default {
     setLocation(data) {
       return { lat: data.lat, lng: data.lng }
     },
-
     goto() {
       const container = document.getElementById('map')
       container.scrollIntoView({ behavior: 'smooth' })
@@ -578,7 +727,7 @@ export default {
 </script>
 
 <style >
-.infowi .infowindow {
+.infowi .infowi .infowindow {
   width: 250px;
   height: 60px;
   display: flex !important;
@@ -590,5 +739,11 @@ export default {
 .style-chooser .vs__search {
   height: 28px;
   border: none;
+}
+
+.pagination {
+  display: flex;
+  margin: 0.1rem 0.25rem 0;
+  justify-content: space-around;
 }
 </style>

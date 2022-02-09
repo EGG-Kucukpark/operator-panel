@@ -79,7 +79,11 @@ export default {
         wheelPropagation: false,
       },
 
-      messages: ['bildirim talebinde bulundu.', 'konumunu attı.', 'taksi iptal etti.'],
+      messages: {
+        customer: 'bildirim talebinde bulundu.',
+        Konum: 'konumunu attı.',
+        Konumiptal: 'taksi iptal etti.',
+      },
 
     }
   },
@@ -88,6 +92,7 @@ export default {
     this.$socket.on('notification', data => {
       this.notification(data)
     })
+
   },
   created() {
     this.notification()
@@ -100,7 +105,7 @@ export default {
     },
 
     returnMsg(data) {
-      return this.messages[data == 'customer' ? 0 : data == 'Konum' ? 1 : data == 'Konumiptal' ? 2 : 0]
+      return this.messages[data]
     },
 
   },

@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="app"
-    class="h-100"
-    :class="[skinClasses]"
-  >
+  <div id="app" class="h-100" :class="[skinClasses]">
     <component :is="layout">
       <router-view />
     </component>
@@ -49,9 +45,7 @@ export default {
   mounted() {
     this.$socket.on('notification', data => {
       this.notification(data)
-    }),
-
-    console.log('App mounted')
+    })
   },
 
   beforeCreate() {
@@ -81,8 +75,8 @@ export default {
     notification(data) {
       Notification.requestPermission(result => {
         if (result === 'granted') {
-          new Notification('Yeni Whatsapp Mesajı', {
-            body: 'Kullanıcı Müşteri Temsilcisi Talebinde Bulundu',
+          new Notification('Hey Taksi Yeni Bildirim Var', {
+            body: 'Hey Taksi Yeni Bildirim Var'
           })
         }
 

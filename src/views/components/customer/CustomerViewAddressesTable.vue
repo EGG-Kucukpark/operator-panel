@@ -13,20 +13,12 @@
             <b-input-group-prepend is-text>
               <feather-icon icon="SearchIcon" />
             </b-input-group-prepend>
-            <b-form-input
-              id="filterInput"
-              v-model="filter"
-              type="search"
-              placeholder="........"
-            />
+            <b-form-input id="filterInput" v-model="filter" type="search" placeholder="........" />
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col
-        cols="12"
-        class="table-responsive"
-      >
+      <b-col cols="12" class="table-responsive">
         <b-table
           striped
           hover
@@ -44,13 +36,18 @@
           empty-text="Veri Bulunamadı."
           empty-filtered-text="Veri Bulunamadı."
         >
-          <p
-            style="text-align: center; width: 100%"
-            show-empty
-          >
+          <p style="text-align: center; width: 100%" show-empty>
             >
             <b>Kullanıcı Bulunamadı.</b>
           </p>
+
+          <template #cell(konum)="data">
+            <span>
+              lat: {{ data.item.address.degreesLatitude }}
+              <br />
+              lng: {{ data.item.address.degreesLongitude }}
+            </span>
+          </template>
 
           <template #cell(created_at)="data">
             <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
@@ -64,11 +61,7 @@
         </b-table>
       </b-col>
 
-      <b-col
-        md="2"
-        sm="4"
-        class="my-1"
-      >
+      <b-col md="2" sm="4" class="my-1">
         <b-form-group class="mb-0">
           <b-form-select
             id="perPageSelect"
@@ -111,7 +104,11 @@ export default {
           key: 'address_type', label: 'Adres Adı', sortable: true, filter: true,
         },
         {
-          key: 'address', label: 'Adres', sortable: true, filter: true,
+          key: 'address_text', label: 'Adres', sortable: true, filter: true,
+        },
+
+        {
+          key: 'konum', label: 'Konum'
         },
         {
           key: 'created_at', label: 'Oluşturulma Tarihi', sortable: true, filter: true,
@@ -132,6 +129,6 @@ export default {
 </script>
 <style>
 .newbtn {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 </style>

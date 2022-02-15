@@ -52,6 +52,14 @@
             <b>Kullanıcı Bulunamadı.</b>
           </p>
 
+            <template #cell(konum)="data">
+            <span>
+              lat: {{ data.item.address.degreesLatitude }}
+              <br />
+              lng: {{ data.item.address.degreesLongitude }}
+            </span>
+          </template>
+
           <template #cell(created_at)="data">
             <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
           </template>
@@ -113,8 +121,12 @@ export default {
         {
           key: 'time', label: 'Randevu Zamanı', sortable: true, filter: true,
         },
+
+         {
+          key: 'address_text', label: 'Randevu Adresi', sortable: true, filter: true,
+        },
         {
-          key: 'address', label: 'Randevu Lokasyonu', sortable: true, filter: true,
+          key: 'konum', label: 'Randevu Lokasyonu', sortable: true, filter: true,
         },
         {
           key: 'created_at', label: 'Oluşturulma Tarihi', sortable: true, filter: true,

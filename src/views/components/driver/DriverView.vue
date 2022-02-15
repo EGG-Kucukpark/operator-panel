@@ -6,7 +6,7 @@
         <b-col
           cols="12"
           xl="12"
-          lg="8"
+          lg="12"
           md="12"
         >
           <driver-view-user-info-card :user-data="userData" />
@@ -14,7 +14,7 @@
         <b-col
           cols="12"
           xl="12"
-          lg="8"
+          lg="12"
           md="12"
         >
           <driver-view-trips-table :user-data="userData" />

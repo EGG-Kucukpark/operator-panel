@@ -97,8 +97,9 @@
 import { DateTime } from 'luxon'
 
 export default {
-  props: {
+    props: {
     userData: {
+      type: Object,
       required: true,
     },
   },
@@ -127,10 +128,13 @@ export default {
     }
   },
   mounted() {
+
+    console.log(this.userData)
+
     setTimeout(() => {
       this.totalRows = this.items.length
       this.getData()
-    }, 500)
+    }, 1000)
   },
 
   methods: {

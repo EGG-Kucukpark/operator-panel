@@ -181,14 +181,13 @@
                 name="check-button"
                 switch
               />
-              {{ autopilot }}
             </div>
 
             <b-form @submit.prevent="driverRedirect">
               <b-card-text class="row">
                 <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
                   <v-select
-                    :disabled="autopilot"
+                    :disabled="autopilot || isApptoday"
                     v-model="selectedDriver"
                     :filterable="true"
                     label="name"
@@ -250,7 +249,7 @@
                       <div
                         v-else
                         class="selected d-center"
-                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{option.driver}}</div>
+                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{ option.driver }}</div>
                     </template>
 
                     <template slot="selected-option" slot-scope="option">
@@ -261,10 +260,9 @@
                       <div
                         v-else
                         class="selected d-center"
-                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{option.driver}}</div>
+                      >{{ option.name }} / {{ option.phone }} / {{ option.time }} / {{ option.driver }}</div>
                     </template>
                   </v-select>
-
                 </b-form-group>
 
                 <b-form-group label="Müşteri Notu" label-for="musteri" class="col-lg-4 col-sm-12">
@@ -467,39 +465,12 @@ export default {
 
   mounted() {
     this.$socket.on('driverLoc', data => {
-      if (this.drivers.length == 0) {
-        this.drivers.push(data)
-      } else {
-        const isExist = this.drivers.every((item, index) => {
-          if (item.id == data.id) {
-            item.lat = data.lat
-            item.lng = data.lng
-            item.last_update = data.last_update
-            item.status = data.status
-            return false
-          }
-
-          return true
-        })
-
-        if (isExist) {
-          this.drivers.push(data)
-        }
-
-
-
-      }
+      this.drivers = data
+      console.log(data)
+      
     })
 
-    setInterval(() => {
-      this.drivers.filter(item => {
-        if (DateTime.local().minute - item.last_update >= 2) {
-          item.last_update = DateTime.local().toFormat('dd.MM.yyyy HH:mm')
-          item.status = 'disconnect'
-        }
-      })
-
-    }, 1500)
+   
 
     this.$socket.on('customerLoc', data => {
       setTimeout(() => {
@@ -537,9 +508,25 @@ export default {
     },
 
     async driverRedirect() {
-      const driver = this.selectedDriver
-      const customer = this.customerPhone.userPhone.replace(/\s/g, '')
+      let driver;
+      let customer
       const { note } = this
+
+      if (this.isApptoday) {
+        driver = {
+          id: this.customerPhone.driver_id,
+          name: this.customerPhone.driver,
+          phone: this.customerPhone.driverPhone,
+        }
+        customer = this.customerPhone.phone
+      } else {
+        driver = this.selectedDriver
+        customer = this.customerPhone.userPhone.replace(/\s/g, '')
+      }
+
+ 
+
+
 
 
       if (driver != '' && customer != '') {

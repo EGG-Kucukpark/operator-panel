@@ -36,21 +36,21 @@ export default {
   },
   data() {
     return {
-      userData: '',
+      userData: {},
     }
   },
   mounted() {
-    this.$http(`drivers/${this.$route.params.id}`, {
+    this.$http(`/driver`, {
       params: {
         id: this.$route.params.id,
       },
     }).then(response => {
       this.userData = response.data
+      console.log(this.userData)
     })
   },
 
 }
 </script>
 
-<style>
-</style>
+ 

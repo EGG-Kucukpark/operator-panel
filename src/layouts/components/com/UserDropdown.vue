@@ -11,15 +11,7 @@
             {{ user.name.substring(0, 20) }}
           </p>
           <span class="user-status">
-            {{
-              user.role == "User"
-                ? "Standart Kullanıcı"
-                : user.role == "Ortak"
-                  ? "İş Ortağı"
-                  : user.role == "Yetkili"
-                    ? "Yetkili"
-                    : "Admin"
-            }}</span>
+            Operator</span>
         </div>
         <b-avatar
           size="40"
@@ -32,7 +24,7 @@
       </template>
 
       <b-dropdown-item
-        :to="{ path: '/profil' }"
+ 
         link-class="d-flex align-items-center"
       >
         <feather-icon
@@ -43,17 +35,10 @@
         <span>Profilim</span>
       </b-dropdown-item>
 
-      <b-dropdown-item link-class="d-flex align-items-center">
-        <feather-icon
-          size="16"
-          icon="MailIcon"
-          class="mr-50"
-        />
-        <span>Inbox</span>
-      </b-dropdown-item>
+    
 
       <b-dropdown-item
-        :to="{ path: '/todo' }"
+   
         link-class="d-flex align-items-center"
       >
         <feather-icon
@@ -112,7 +97,7 @@ export default {
   created() {},
   methods: {
     logout() {
-      this.$http(
+/*       this.$http(
         'https://ipgeolocation.abstractapi.com/v1/?api_key=b2a2f19c99f142a598d01b3a0826266b',
       ).then(response => {
         this.$http.post('/api/log', {
@@ -123,11 +108,13 @@ export default {
           islem: 'Çıkış Yapıldı',
           country: response.data.flag.png,
         })
-      })
+
+        
+      }) */
       localStorage.removeItem('user')
       localStorage.removeItem('token')
 
-      this.$router.push('/login')
+      this.$router.push('/giris')
     },
 
     degisiklik() {

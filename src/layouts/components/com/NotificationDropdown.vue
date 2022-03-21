@@ -55,8 +55,7 @@
 
 <script>
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import Ripple from 'vue-ripple-directive'
-import { ref } from 'vue'
+ import { ref } from 'vue'
 import { DateTime } from 'luxon'
 
 export default {
@@ -64,9 +63,7 @@ export default {
     VuePerfectScrollbar,
 
   },
-  directives: {
-    Ripple,
-  },
+  
 
   data() {
     return {

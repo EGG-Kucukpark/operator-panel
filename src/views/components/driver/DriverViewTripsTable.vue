@@ -13,20 +13,12 @@
             <b-input-group-prepend is-text>
               <feather-icon icon="SearchIcon" />
             </b-input-group-prepend>
-            <b-form-input
-              id="filterInput"
-              v-model="filter"
-              type="search"
-              placeholder="........"
-            />
+            <b-form-input id="filterInput" v-model="filter" type="search" placeholder="........" />
           </b-input-group>
         </b-form-group>
       </b-col>
 
-      <b-col
-        cols="12"
-        class="table-responsive"
-      >
+      <b-col cols="12" class="table-responsive">
         <b-table
           striped
           hover
@@ -44,10 +36,7 @@
           empty-text="Veri Bulunamadı."
           empty-filtered-text="Veri Bulunamadı."
         >
-          <p
-            style="text-align: center; width: 100%"
-            show-empty
-          >
+          <p style="text-align: center; width: 100%" show-empty>
             >
             <b>Kullanıcı Bulunamadı.</b>
           </p>
@@ -56,7 +45,7 @@
             <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
           </template>
           <template #cell(distance)="data">
-            <span>{{ Math.ceil(data.item.distance) }}  KM</span>
+            <span>{{ Math.ceil(data.item.distance) }} KM</span>
           </template>
           <template #cell(price)="data">
             <span>{{ Math.ceil(data.item.distance) * 4 }} ₺</span>
@@ -64,11 +53,7 @@
         </b-table>
       </b-col>
 
-      <b-col
-        md="2"
-        sm="4"
-        class="my-1"
-      >
+      <b-col md="2" sm="4" class="my-1">
         <b-form-group class="mb-0">
           <b-form-select
             id="perPageSelect"
@@ -97,7 +82,7 @@
 import { DateTime } from 'luxon'
 
 export default {
-    props: {
+  props: {
     userData: {
       type: Object,
       required: true,
@@ -109,17 +94,21 @@ export default {
       ...this.$store.state.app.table,
       fields: [
         {
+          key: 'created_at', label: 'Başlangıç', sortable: true, filter: true,
+        },
+        {
           key: 'customerPhone', label: 'Müşteri Telefon', sortable: true, filter: true,
         },
         {
-          key: 'distance', label: 'Total KM', sortable: true, filter: true,
+          key: 'distance', label: ' KM', sortable: true, filter: true,
         },
         {
-          key: 'price', label: 'Total Fiyat', sortable: true, filter: true,
+          key: 'driverDiscounted', label: 'Sürücü', sortable: true, filter: true,
         },
         {
-          key: 'created_at', label: 'Başlangıç', sortable: true, filter: true,
+          key: 'price', label: 'Total', sortable: true, filter: true,
         },
+
 
       ],
       DateTime,
@@ -129,7 +118,6 @@ export default {
   },
   mounted() {
 
-    console.log(this.userData)
 
     setTimeout(() => {
       this.totalRows = this.items.length
@@ -139,11 +127,7 @@ export default {
 
   methods: {
     getData() {
-      this.userData.trip.filter(item => {
-        if (item.driverPhone === this.userData.general.phone) {
-          this.items.push(item)
-        }
-      })
+      this.items = this.userData.trips
     },
   },
 
@@ -152,6 +136,6 @@ export default {
 </script>
 <style>
 .newbtn {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 </style>

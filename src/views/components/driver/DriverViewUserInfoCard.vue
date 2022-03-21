@@ -8,8 +8,8 @@
           <b-avatar size="104px" src="/public/../assets/customer.png" rounded variant="success" />
           <div class="d-flex flex-column ml-1">
             <div class="mb-1">
-              <h4 class="mb-0">{{ userData.general.name }}</h4>
-              <span class="card-text">{{ userData.general.phone }}</span>
+              <h4 class="mb-0">{{ userData.general[0].name }}</h4>
+              <span class="card-text">{{ userData.general[0].phone }}</span>
             </div>
           </div>
         </div>
@@ -30,7 +30,7 @@
               <feather-icon icon="UserIcon" class="mr-75" />
               <span class="font-weight-bold">İsim</span>
             </th>
-            <td class="pb-50">{{ userData.general.name }}</td>
+            <td class="pb-50">{{ userData.general[0].name }}</td>
           </tr>
           <tr>
             <th class="pb-50">
@@ -52,7 +52,7 @@
               <span class="font-weight-bold">Telefon Numarası</span>
             </th>
             <td class="pb-50 text-capitalize">
-              <a :href="'tel:' + userData.general.name">{{ userData.general.phone }}</a>
+              <a :href="'tel:' + userData.general[0].name">{{ userData.general[0].phone }}</a>
             </td>
           </tr>
         </table>
@@ -76,10 +76,10 @@ export default {
 
   computed: {
     totalKm() {
-      const data = this.userData.general.phone
+      const data = this.userData.general[0].phone
       let total = 0
 
-      this.userData.trip.filter(item => {
+      this.userData.trips.filter(item => {
         if (item.driverPhone === data) {
           total += item.distance
         }
@@ -91,9 +91,9 @@ export default {
     totalTrips() {
 
 
-      const data = this.userData.general.phone
+      const data = this.userData.general[0].phone
       let total = 0
-      this.userData.trip.filter(item => {
+      this.userData.trips.filter(item => {
         if (item.driverPhone === data) {
           total += 1
         }

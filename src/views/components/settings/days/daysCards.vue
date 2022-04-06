@@ -72,7 +72,7 @@
                             label-cols-sm="2"
                             label-align-sm="right"
                         >
-                            <b-form-input type="number" id="name" v-model="priceRatio" />
+                            <b-form-input id="name" v-model="priceRatio" />
                         </b-form-group>
 
                         <div style="float: right">

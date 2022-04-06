@@ -104,10 +104,19 @@
 
                     <b-media-body>
                       <h6 class="transaction-title">{{ driver.name }}</h6>
-                      <small>{{ driver.phone }}</small>
+                      <h6 class="transaction-title">{{ driver.phone }}</h6>
+
+                      <small v-if="driver.customerName != null">Müşteri: {{ driver.customerName }}</small>
+                      <br />
+
+                      <small
+                        v-if="driver.customerPhone != null"
+                      >M.Telefon: {{ driver.customerPhone }}</small>
                     </b-media-body>
+
                     <b-button
-                      variant="flat-primary"
+                      variant="flat-primary "
+                      style="width:100%"
                       @click="center = { lat: driver.lat, lng: driver.lng }, goto(), zoom = 20"
                     >
                       <feather-icon class="mr-1" icon="MapPinIcon" />Haritada Göster
@@ -161,17 +170,29 @@
             <b-card-title>
               <h1>Sürücü Yönlendirme</h1>
             </b-card-title>
+            <b-row>
+              <div style="margin-left:12px;  align-items:center" class="row">
+                <h1>Otopilot</h1>
+                <b-form-checkbox
+                  v-model="autopilot"
+                  style="margin-left:10px;"
+                  class="custom-control-success"
+                  name="check-button"
+                  switch
+                />
+              </div>
 
-            <div style="margin-left:1px;  align-items:center" class="row">
-              <h1>Otopilot</h1>
-              <b-form-checkbox
-                v-model="autopilot"
-                style="margin-left:10px;"
-                class="custom-control-success"
-                name="check-button"
-                switch
-              />
-            </div>
+              <div style="margin-left:30px;  align-items:center" class="row">
+                <h1>Varış Noktaları</h1>
+                <b-form-checkbox
+                  v-model="isDestination"
+                  style="margin-left:10px;"
+                  class="custom-control-success"
+                  name="check-button"
+                  switch
+                />
+              </div>
+            </b-row>
 
             <b-form @submit.prevent="driverRedirect">
               <b-card-text class="row">
@@ -319,12 +340,14 @@
           @click="openWindow2(m)"
         />
 
-        <GmapMarker
-          v-for="m in destinations"
-          :key="m.id"
-          :position="{ lat: m.destination.lat, lng: m.destination.lng }"
-          @click="openWindow3(m)"
-        />
+        <div v-if="isDestination" class>
+          <GmapMarker
+            v-for="m in destinations"
+            :key="m.id"
+            :position="{ lat: m.destination.lat, lng: m.destination.lng }"
+            @click="openWindow3(m)"
+          />
+        </div>
 
         <gmap-info-window
           :opened="window_open"
@@ -338,9 +361,18 @@
               {{ openedData.phone }} /
               <a :href="'tel:' + openedData.phone">Arama Yap</a>
             </p>
-            <b-form-rating no-border value="3" readonly show-value inline variant="warning" />
 
+            <div v-if="openedData.customerName != null">
+              <h5>Müşteri:Adı {{ openedData.customerName }}</h5>
+              <h5>Müşteri Telefon:{{ openedData.customerPhone }}</h5>
+            </div>
             <p>Son Aktif Zamanı: {{ openedData.last_online }}</p>
+
+            <b-badge :variant="setVariant(openedData.status)" style="height:30px; ">
+              <h4
+                style="color:white;text-align:center;  text-transform: capitalize;"
+              >{{ (openedData.status) }}</h4>
+            </b-badge>
           </div>
         </gmap-info-window>
 
@@ -363,6 +395,13 @@
             </p>
 
             <p style="font-weight:500">Bekleme Süresi: {{ openedData2.duration }} / dk</p>
+
+            <p v-if="openedData2.location" style="font-weight:500">
+              <a
+                target="_blank"
+                :href="'https://maps.google.com/?q=' + openedData2.location.degreesLatitude + ',' + openedData2.location.degreesLongitude"
+              >Haritada Göster</a>
+            </p>
 
             <b-button
               v-if="openedData2.driver != null"
@@ -455,7 +494,7 @@ export default {
         },
       },
       zoom: 12,
-
+      isDestination: true,
       drivers: [],
       driverControl: [],
       driversSelect: [store.state.app.drivers],
@@ -498,37 +537,20 @@ export default {
   async mounted() {
     this.$socket.on('driverLoc', data => {
       this.drivers = data
-      this.drivers.filter(item => {
-        if (DateTime.local() - item.last_update > 2 * 60 * 1000) {
-          item.status = 'disconnect'
-        }
-
-      })
-
     })
-
-
-    setInterval(() => {
-      this.drivers.filter(item => {
-        if (DateTime.local() - item.last_update > 2 * 60 * 1000) {
-          item.status = 'disconnect'
-        }
-
-      })
-    }, 1000)
-
 
 
     this.$socket.on('customerLoc', data => {
       setTimeout(() => {
-        this.userLocation()
+        this.userLocation(true)
       }, 100)
     })
 
-    this.$socket.on('customerLocApp', data => {
-      console.log('customerLocApp')
-      console.log(data)
+
+    this.$socket.on('updateDrivers', () => {
+      this.getDrivers()
     })
+
 
     this.$socket.on('startTripNot', data => {
       this.userLocation()
@@ -538,6 +560,8 @@ export default {
       this.userDatas.filter(item => {
         item.userPhone == data.customerPhone ? item.status = 'trip' : ''
       })
+
+      this.getDrivers()
     })
     this.$socket.on('destinationNot', data => {
       this.getDestinations()
@@ -546,8 +570,12 @@ export default {
     this.$socket.on('endTripMsg', data => {
       this.userLocation()
       this.getDestinations()
+    })
 
-      console.log('endTripMsg', data)
+
+    this.$socket.on('tripCancel', () => {
+      this.userLocation()
+
     })
 
 
@@ -588,22 +616,25 @@ export default {
         customer = this.customerPhone.userPhone.replace(/\s/g, '')
       }
 
-
-
       if (driver != '' && customer != '') {
         const data = {
           driver,
           customer,
           note,
         }
-        console.log(data)
 
         this.selectedDriver = ''
         this.customerPhone = ''
         this.note = ''
 
         toastBus.$emit('toast', { type: 'redirect' })
-        this.$socket.emit('customerLocationApp', data)
+
+
+        if (this.isApptoday) {
+          this.$socket.emit('customerAppointmentStart', data)
+        } else {
+          this.$socket.emit('customerLocationApp', data)
+        }
 
 
       } else {
@@ -627,7 +658,6 @@ export default {
     },
 
     async openWindow(m) {
-      console.log(m)
       this.openedData = m
       this.infowindow = { lat: m.lat, lng: m.lng }
       this.window_open = true
@@ -684,20 +714,22 @@ export default {
     },
 
 
-    async calcLoc2(data) {
+    async calcLoc2(data, url = "/calcLoc") {
 
       const user = {
         degreesLatitude: data.location.degreesLatitude,
         degreesLongitude: data.location.degreesLongitude,
       }
 
-      let drivers = this.drivers.map(x => x.status === 'online' ? x : null).filter(x => x !== null)
+      await this.getDrivers();
+      let drivers = this.drivers.map(x => x.status === 'online' ? x : '').filter(x => x !== '')
       let result = []
+
 
 
       if (drivers.length > 0) {
 
-        await this.$http.post('/calcLoc', { drivers: drivers, user }).then(res => {
+        await this.$http.post(url, { drivers: drivers, user }).then(res => {
           const resData = res.data
           resData.sort((a, b) => {
             if (a.distance < b.distance) return -1
@@ -716,8 +748,6 @@ export default {
 
     },
 
-
-
     async calcLoc3(data) {
       let tripData = (await axios('https://www.turkpark.com.tr:2222/currentTripData', { params: { trip_id: data.tripId } })).data[0]
       let finalData = (await axios.post('https://www.turkpark.com.tr:2222/driverDestination', { destination: data.destination, driver: { lat: tripData.lat, lng: tripData.lng } })).data[0]
@@ -732,7 +762,7 @@ export default {
       })
     },
 
-    async userLocation() {
+    async userLocation(isNew = false) {
       this.userLocations = []
       this.userDatas = []
 
@@ -747,7 +777,6 @@ export default {
             this.userLocations.push(item)
             this.userDatas.push(item)
 
-
           }
         })
 
@@ -757,10 +786,9 @@ export default {
         this.customerData = this.userDatas
 
 
-
-        if (this.autopilot) {
+        if (this.autopilot && this.userDatas[0].status === 'online' && isNew) {
           this.selectedDriver = null;
-          this.selectedDriver = await this.calcLoc2(this.userDatas[0])
+          this.selectedDriver = await this.calcLoc2(this.userDatas[0], '/calcLoc/auto')
 
           this.customerPhone = this.userDatas[0]
 
@@ -780,14 +808,6 @@ export default {
     async getDrivers() {
       axios('/driverTrack').then(res => {
         this.drivers = res.data
-
-
-        this.drivers.filter(item => {
-          if (DateTime.local() - item.last_update > 2 * 60 * 1000) {
-            item.status = 'disconnect'
-          }
-
-        })
       })
     },
 
@@ -806,6 +826,20 @@ export default {
     },
     setLocation(data) {
       return { lat: data.lat, lng: data.lng }
+    },
+
+    setVariant(data) {
+      let statusArray = {
+        'online': 'success',
+        'offline': 'danger',
+        'busy': 'warning',
+        'offline': 'danger',
+        'trip': 'info',
+        'disconnected': 'secondary'
+      }
+
+      return statusArray[data]
+
     },
     goto() {
       const container = document.getElementById('map')

@@ -4,28 +4,60 @@
             <b-row>
                 <b-col md="12">
                     <b-col md="6">
-                        <b-form-group
-                            label="Minumum Dakika Uzaklığı"
-                            label-for="mc-first-name"
-                        >
+                        <b-form-group label="Minimum Dakika Uzaklığı" label-for="mc-first-name">
                             <b-form-input
                                 id="mc-first-name"
+                                disabled
                                 v-model="minTime"
-                                placeholder="Bekleme Ücreti"
+                                placeholder="Minimum Dakika Uzaklığı"
                             />
                         </b-form-group>
                     </b-col>
                 </b-col>
                 <b-col md="12">
                     <b-col md="6">
-                        <b-form-group
-                            label="Minumum Km Uzaklığı"
-                            label-for="mc-first-name"
-                        >
+                        <b-form-group label="Minimum Km Uzaklığı" label-for="mc-first-name">
                             <b-form-input
                                 id="mc-first-name"
                                 v-model="minDistance"
-                                placeholder="Bekleme Ücreti"
+                                placeholder="Minimum Km Uzaklığı"
+                            />
+                        </b-form-group>
+                    </b-col>
+                </b-col>
+                <b-col md="12">
+                    <b-col md="6">
+                        <b-form-group label="Maximum Km Uzaklığı" label-for="mc-first-name">
+                            <b-form-input
+                                id="mc-first-name"
+                                v-model="maxDistance"
+                                placeholder="Maximum Km Uzaklığı"
+                            />
+                        </b-form-group>
+                    </b-col>
+                </b-col>
+
+                <b-col md="12">
+                    <b-col md="6">
+                        <b-form-group label="Canlı Yardım Arama" label-for="mc-first-name">
+                            <b-form-checkbox
+                                checked="true"
+                                v-model="hrCall"
+                                :class="hrCall ? 'custom-control-success' : ''"
+                                name="check-button"
+                                switch
+                            />
+                        </b-form-group>
+                    </b-col>
+                </b-col>
+                <b-col md="12">
+                    <b-col md="6">
+                        <b-form-group label="Mesaj Arama" label-for="mc-first-name">
+                            <b-form-checkbox
+                                v-model="msgCall"
+                                :class="msgCall ? 'custom-control-success' : ''"
+                                name="check-button"
+                                switch
                             />
                         </b-form-group>
                     </b-col>
@@ -52,6 +84,9 @@ export default {
         return {
             minTime: '',
             minDistance: '',
+            maxDistance: '',
+            hrCall: false,
+            msgCall: false
 
         }
 
@@ -66,8 +101,9 @@ export default {
             this.$http.get('/options').then((res) => {
                 this.minTime = res.data.minTime;
                 this.minDistance = res.data.minDistance;
-
-
+                this.maxDistance = res.data.maxDistance;
+                this.hrCall = res.data.hrCall;
+                this.msgCall = res.data.msgCall;
 
             })
         },
@@ -76,6 +112,10 @@ export default {
             this.$http.put('/options', {
                 minDistance: this.minDistance,
                 minTime: this.minTime,
+                maxDistance: this.maxDistance,
+                hrCall: this.hrCall,
+                msgCall: this.msgCall
+
             }).then((res) => {
                 this.getData()
                 toastBus.$emit('toast', { type: 'success' })

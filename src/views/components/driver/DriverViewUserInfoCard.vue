@@ -17,7 +17,14 @@
         <!-- User Stats -->
         <div class="d-flex align-items-center mt-2">
           <div class="d-flex align-items-center mr-2">
-            <b-form-rating no-border value="3" show-value inline variant="warning" />
+            <b-form-rating
+              no-border
+              :value="(userData.general[0].score).toFixed(1)"
+              readonly
+              show-value
+              inline
+              variant="warning"
+            />
           </div>
         </div>
       </b-col>
@@ -72,7 +79,7 @@ export default {
     },
   },
 
- 
+
 
   computed: {
     totalKm() {

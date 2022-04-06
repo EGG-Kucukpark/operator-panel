@@ -82,19 +82,38 @@
    },
 
    {
-    path: '/ayarlar',
-    name: 'settings',
-    component: () => import('@/views/operator/settings.vue'),
-    meta: {
-      requiresAuth: true,
+     path: '/ayarlar',
+     name: 'settings',
+     component: () => import('@/views/operator/settings.vue'),
+     meta: {
+       requiresAuth: true,
 
-      pageTitle: 'Ayarlar',
-      breadcrumb: [{
-        text: 'Ayarlar',
-        active: true,
-      }],
-    },
-  },
+       pageTitle: 'Ayarlar',
+       breadcrumb: [{
+         text: 'Ayarlar',
+         active: true,
+       }],
+     },
+   },
+
+   {
+     path: '/ayarlar/kayitlar',
+     name: 'settings/logs',
+     component: () => import('@/views/operator/settings/logs.vue'),
+     meta: {
+       requiresAuth: true,
+       pageTitle: 'Kayıtlar',
+       breadcrumb: [{
+         text: 'Ayarlar',
+         route: 'settings',
+         active: false,
+       }, {
+         text: 'Kayıtlar',
+         active: true,
+       }],
+     }
+   },
+
 
    {
      path: '/surucu-basvurulari',

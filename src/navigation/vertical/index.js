@@ -1,5 +1,4 @@
-export default [
-  {
+export default [{
     title: 'Ana Panel',
     route: 'home',
     icon: 'HomeIcon',
@@ -34,5 +33,12 @@ export default [
     title: 'Ayarlar',
     route: 'settings',
     icon: 'SettingsIcon',
+
   },
+  {
+    title: 'Kayıtlar',
+    route: 'settings/logs',
+    icon: 'FileIcon',
+
+  }
 ]

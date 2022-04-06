@@ -44,16 +44,24 @@
             <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
           </template>
           <template #cell(arac)="data">
-            <span>{{ JSON.parse(data.item.arac).arac_marka }}</span>
+            <span>{{ typeof (data.item.arac) == 'string' ? JSON.parse(data.item.arac).marka : data.item.arac.arac_marka }}</span>
             <br />
-            <span>{{ JSON.parse(data.item.arac).arac_yil }}</span>
+            <span>{{ typeof (data.item.arac) == 'string' ? JSON.parse(data.item.arac).yil : data.item.arac.arac_yil }}</span>
             <br />
 
-            <span>{{ JSON.parse(data.item.arac).arac_model }}</span>
+            <span>{{ typeof (data.item.arac) == 'string' ? JSON.parse(data.item.arac).arac_model : data.item.arac.arac_model }}</span>
           </template>
 
           <template #cell(file)="data">
-            <img :src="require(`../../assets/images/drivers/${data.item.file}`)" alt />
+            <div v-if="data.item.file" class="driver_img">
+              <img
+                style="object-fit: cover; width:100%; height:100%"
+                :src="`https://www.turkpark.com.tr:2222/public/driver_applications/${data.item.file}`"
+                alt
+              />
+            </div>
+
+            <span v-else>Fotoğraf yok.</span>
           </template>
 
           <!--  <template #cell(actions)="data">
@@ -124,6 +132,9 @@ export default {
       ...this.$store.state.app.table,
       fields: [
         {
+          key: 'file', label: 'Fotoğraf', sortable: true, filter: true,
+        },
+        {
           key: 'name', label: 'Ad-Soyad', sortable: true, filter: true,
         },
         {
@@ -182,3 +193,12 @@ export default {
 .newbtn .newbtn {
   margin-left: 5px;
 }
+
+.driver_img {
+  
+  width: 90px;
+  height: 90px;
+ 
+  overflow: hidden;
+}
+</style>

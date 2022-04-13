@@ -12,6 +12,10 @@
                 <komisyon />
             </b-tab>
 
+            <b-tab title="Telefonlar">
+                <phones />
+            </b-tab>
+
             <b-tab title="Saatler ve Günler">
                 <hour-settings :options="optionsData" />
             </b-tab>
@@ -24,12 +28,15 @@ import prices from './prices.vue'
 import komisyon from './komisyon.vue'
 import general from './general.vue'
 import hourSettings from './hourSettings.vue'
+import phones from './phones.vue'
+
 export default {
     components: {
         prices,
         komisyon,
         general,
-        hourSettings
+        hourSettings,
+        phones
     },
 
 

@@ -1,5 +1,100 @@
 <template>
     <b-card>
+        <b-modal
+            ref="modal"
+            hide-header-close
+            :hide-footer="true"
+            size="lg"
+            centered
+            title="Filtreleme"
+        >
+            <validation-observer ref="loginForm" #default="{ invalid }">
+                <b-form @submit.prevent="filterData()">
+                    <b-form-group
+                        label="Başlangıç Günü"
+                        label-for="name"
+                        label-cols-sm="2"
+                        label-align-sm="right"
+                    >
+                        <validation-provider
+                            #default="{ errors }"
+                            name="Telefon Numarası"
+                            rules="required"
+                        >
+                            <b-form-datepicker
+                                :state="errors.length > 0 ? false : null"
+                                v-model="days.start"
+                            />
+
+                            <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+                    <b-form-group
+                        label="Bitiş Günü"
+                        label-for="email"
+                        label-cols-sm="2"
+                        label-align-sm="right"
+                    >
+                        <validation-provider
+                            #default="{ errors }"
+                            name="Telefon Numarası"
+                            rules="required"
+                        >
+                            <b-form-datepicker
+                                :state="errors.length > 0 ? false : null"
+                                v-model="days.end"
+                            />
+
+                            <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+                    <b-form-group
+                        label="Başlangıç Saati"
+                        label-for="name"
+                        label-cols-sm="2"
+                        label-align-sm="right"
+                    >
+                        <validation-provider
+                            #default="{ errors }"
+                            name="Telefon Numarası"
+                            rules="required"
+                        >
+                            <b-form-timepicker
+                                :state="errors.length > 0 ? false : null"
+                                v-model="times.start"
+                            />
+                            <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+                    <b-form-group
+                        label="Bitiş Saati"
+                        label-for="email"
+                        label-cols-sm="2"
+                        label-align-sm="right"
+                    >
+                        <validation-provider
+                            #default="{ errors }"
+                            name="Telefon Numarası"
+                            rules="required"
+                        >
+                            <b-form-timepicker
+                                :state="errors.length > 0 ? false : null"
+                                v-model="times.end"
+                            />
+                            <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+
+                    <div style="float: right">
+                        <b-button variant="success" :disabled="invalid" type="submit">Tamam</b-button>
+                    </div>
+                    <div style="float: right; padding-right: 10px">
+                        <b-button variant="danger" @click="closeModal()">İptal</b-button>
+                    </div>
+                </b-form>
+            </validation-observer>
+        </b-modal>
+
         <b-row>
             <b-col>
                 <b-form-group
@@ -23,6 +118,19 @@
                 </b-form-group>
             </b-col>
 
+            <b-button
+                class="mb-1"
+                @click="$refs.modal.show()"
+                style="margin-right: 16px"
+                variant="success"
+            >Filtrele</b-button>
+            <b-button
+                class="mb-1"
+                @click="getData"
+                style="margin-right: 16px"
+                variant="danger"
+            >Sıfırla</b-button>
+
             <b-col cols="12" class="table-responsive">
                 <b-table
                     striped
@@ -45,16 +153,31 @@
                         >
                         <b>Kayıt Bulunamadı.</b>
                     </p>
-
-                    <template #cell(visit)="data">{{ data.item.clicks.visit }}</template>
+                    <template #cell(visit)="data">{{ data.item.clicks.visit }} <br> </template>
                     <template #cell(calculate)="data">{{ data.item.clicks.calculate }}</template>
-
                     <template #cell(callTaxi)="data">{{ data.item.clicks.callTaxi }}</template>
-
                     <template #cell(whatsappButton)="data">{{ data.item.clicks.whatsappButton }}</template>
-
                     <template #cell(phone)="data">{{ data.item.clicks.phone }}</template>
                     <template #cell(ads)="data">{{ data.item.clicks.ads }}</template>
+                    <template #cell(friendClick)="data">{{ data.item.clicks.friendClick }}</template>
+
+                    <template
+                        #cell(keyword)="data"
+                    >{{ data.item.clicks.keyword > 0 ? 'Keyword: ' + data.item.key : 'Boş' }}</template>
+                    <template #cell(created_at)="data">
+                        <span>{{ DateTime.fromISO(data.item.created_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
+                        <br />
+
+                        <span
+                            v-if="data.item.logout_at"
+                        >{{ DateTime.fromISO(data.item.logout_at).toFormat('dd.MM.yyyy HH:mm') }}</span>
+                        <br />
+
+                        <!-- Min Diff  -->
+                        <span
+                            v-if="data.item.logout_at"
+                        >Kalınan Süre: {{ (DateTime.fromISO(data.item.logout_at).diff(DateTime.fromISO(data.item.created_at), 'minutes').minutes).toFixed(1) }} dk</span>
+                    </template>
                 </b-table>
             </b-col>
 
@@ -85,32 +208,49 @@
 </template>
 <script>
 import { DateTime } from 'luxon'
-
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { required } from '@validations'
 export default {
+    components: {
+        ValidationProvider,
+        ValidationObserver,
+    },
 
     data() {
         return {
             ...this.$store.state.app.table,
             fields: [
                 { key: 'ip_address', label: 'IP Adresi' },
+                { key: 'il', label: 'İl' },
                 { key: 'visit', label: 'Ziyaret' },
                 { key: 'ads', label: 'Reklam' },
+                { key: 'keyword', label: 'Anahtar Kelime' },
                 { key: 'calculate', label: 'Hesaplama' },
                 { key: 'callTaxi', label: 'Taxi Çağırma' },
                 { key: 'whatsappButton', label: 'Whatsapp Butonu' },
                 { key: 'phone', label: 'Telefon Butonu' },
+                { key: 'friendClick', label: 'Arkadaş Butonu' },
+                { key: 'created_at', label: 'Tarih', sortable: true, filter: true },
 
             ],
             DateTime,
             items: [],
             allTrips: [],
+            errors: [],
+            days: {
+                start: '',
+                end: '',
+            },
+            times: {
+                start: '',
+                end: '',
+            },
+
 
         }
     },
     mounted() {
-        setTimeout(() => {
-            this.totalRows = this.items.length
-        }, 500)
+
 
         this.getData()
     },
@@ -123,13 +263,65 @@ export default {
         getData() {
             this.$http('/heytaksi/log').then(res => {
                 this.items = res.data
-                console.log(this.items)
+                this.totalRows = this.items.length
+
             })
 
+        },
 
-
+        closeModal() {
+            let { days, times } = this
+            days.start = ''
+            days.end = ''
+            times.start = ''
+            times.end = ''
+            this.$refs.modal.hide()
 
         },
+
+
+        filterData() {
+            let newItems = []
+            let { days, times } = this
+
+            if (!days.start || !days.end || !times.start || !times.end) {
+                this.getData()
+                this.$refs.modal.hide()
+                return;
+            }
+
+            days.start = DateTime.fromISO(days.start).toFormat('dd.MM.yyyy')
+            days.end = DateTime.fromISO(days.end).toFormat('dd.MM.yyyy')
+            times.start = DateTime.fromISO(times.start).toFormat('HH:mm')
+            times.end = DateTime.fromISO(times.end).toFormat('HH:mm')
+            let filter = {
+                start: '',
+                end: '',
+
+            }
+            filter.start = (DateTime.fromFormat(`${days.start} ${times.start}`, 'dd.MM.yyyy HH:mm').toFormat('dd.MM.yyyy HH:mm'))
+            filter.end = (DateTime.fromFormat(`${days.end} ${times.end}`, 'dd.MM.yyyy HH:mm').toFormat('dd.MM.yyyy HH:mm'))
+            filter.start = DateTime.fromFormat(filter.start, 'dd.MM.yyyy HH:mm').ts;
+            filter.end = DateTime.fromFormat(filter.end, 'dd.MM.yyyy HH:mm').ts;
+
+            this.items.filter(item => {
+                let { created_at } = item
+
+                //get timestamp
+                let date = DateTime.fromISO(created_at).toFormat('dd.MM.yyyy HH:mm')
+                date = DateTime.fromFormat(date, 'dd.MM.yyyy HH:mm').ts;
+
+                if (date >= filter.start && date <= filter.end) {
+                    newItems.push(item)
+                }
+
+            })
+            this.items = newItems
+            this.totalRows = this.items.length
+            this.currentPage = 1
+            this.$refs.modal.hide()
+
+        }
     },
 }
 

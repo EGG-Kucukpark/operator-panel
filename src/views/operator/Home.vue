@@ -18,6 +18,7 @@
             <!-- Driver Redirect End -->
         </b-row>
         <!-- CARDS END -->
+        
         <!-- MAP -->
         <Map :customers="customers" :drivers="drivers" :mapOptions="mapOptions" />
         <!-- MAP END -->

@@ -15,7 +15,7 @@
 
                         <b-media-body>
                             <h6 class="transaction-title">{{ customer.userName }}</h6>
-                            <small>{{ customer.userPhone }}</small> /
+                            <small>{{ customer.userPhone.replaceAll(" ","") }}</small> /
                             <small>{{ customer.duration }} DK</small>
                         </b-media-body>
                         <b-button variant="flat-primary"

@@ -1,13 +1,12 @@
 <template>
   <b-card
     no-body
-    :class="{'open': visible}"
+    :class="{ open: visible }"
     @mouseenter="collapseOpen"
     @mouseleave="collapseClose"
   >
     <b-card-header
-
-      :class="{'collapsed': !visible}"
+      :class="{ collapsed: !visible }"
       :aria-expanded="visible ? 'true' : 'false'"
       :aria-controls="collapseItemID"
       role="tab"
@@ -15,7 +14,7 @@
       @click="updateVisible(!visible)"
     >
       <slot name="header">
-        <span class="lead collapse-title">{{ title }}</span>
+        <h2 class="p-1">{{ title }}</h2>
       </slot>
     </b-card-header>
 
@@ -33,10 +32,8 @@
 </template>
 
 <script>
-import {
-  BCard, BCardHeader, BCardBody, BCollapse,
-} from 'bootstrap-vue'
-import { v4 as uuidv4 } from 'uuid'
+import { BCard, BCardHeader, BCardBody, BCollapse } from "bootstrap-vue";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   components: {
@@ -58,30 +55,32 @@ export default {
   data() {
     return {
       visible: false,
-      collapseItemID: '',
+      collapseItemID: "",
       openOnHover: this.$parent.hover,
-    }
+    };
   },
   computed: {
     accordion() {
-      return this.$parent.accordion ? `accordion-${this.$parent.collapseID}` : null
+      return this.$parent.accordion
+        ? `accordion-${this.$parent.collapseID}`
+        : null;
     },
   },
   created() {
-    this.collapseItemID = uuidv4()
-    this.visible = this.isVisible
+    this.collapseItemID = uuidv4();
+    this.visible = this.isVisible;
   },
   methods: {
     updateVisible(val = true) {
-      this.visible = val
-      this.$emit('visible', val)
+      this.visible = val;
+      this.$emit("visible", val);
     },
     collapseOpen() {
-      if (this.openOnHover) this.updateVisible(true)
+      if (this.openOnHover) this.updateVisible(true);
     },
     collapseClose() {
-      if (this.openOnHover) this.updateVisible(false)
+      if (this.openOnHover) this.updateVisible(false);
     },
   },
-}
+};
 </script>

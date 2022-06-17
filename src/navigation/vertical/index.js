@@ -36,7 +36,7 @@ export default [{
 
   },
   {
-    title: 'Kayıtlar',
+    title: 'Raporlar',
     route: 'settings/logs',
     icon: 'FileIcon',
 

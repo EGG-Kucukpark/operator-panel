@@ -8,21 +8,22 @@
 </template>
 
 <script>
-
 // This will be populated in `beforeCreate` hook
-import { $themeColors, $themeBreakpoints, $themeConfig } from '@themeConfig'
-import { provideToast } from 'vue-toastification/composition'
-import { watch } from '@vue/composition-api'
-import useAppConfig from '@core/app-config/useAppConfig'
-import { useWindowSize, useCssVar } from '@vueuse/core'
-import toasts from '@/views/components/toasts'
-import toastBus from '@/eventBus'
+import { $themeColors, $themeBreakpoints, $themeConfig } from "@themeConfig";
+import { provideToast } from "vue-toastification/composition";
+import { watch } from "@vue/composition-api";
+import useAppConfig from "@core/app-config/useAppConfig";
+import { useWindowSize, useCssVar } from "@vueuse/core";
+import toasts from "@/views/components/toasts";
+import toastBus from "@/eventBus";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 
-import store from '@/store'
+import store from "@/store";
 
-const LayoutVertical = () => import('@/layouts/vertical/LayoutVertical.vue')
-const LayoutHorizontal = () => import('@/layouts/horizontal/LayoutHorizontal.vue')
-const LayoutFull = () => import('@/layouts/full/LayoutFull.vue')
+const LayoutVertical = () => import("@/layouts/vertical/LayoutVertical.vue");
+const LayoutHorizontal = () =>
+  import("@/layouts/horizontal/LayoutHorizontal.vue");
+const LayoutFull = () => import("@/layouts/full/LayoutFull.vue");
 
 export default {
   components: {
@@ -30,67 +31,96 @@ export default {
     LayoutVertical,
     LayoutFull,
     toasts,
-
   },
 
   computed: {
     layout() {
-      if (this.$route.meta.layout === 'full') return 'layout-full'
-      return `layout-${this.contentLayoutType}`
+      if (this.$route.meta.layout === "full") return "layout-full";
+      return `layout-${this.contentLayoutType}`;
     },
     contentLayoutType() {
-      return this.$store.state.appConfig.layout.type
+      return this.$store.state.appConfig.layout.type;
     },
   },
   mounted() {
-    this.$socket.on('notification', data => {
-      this.notification(data)
-    })
+    this.$toastBus.$on("Notification", (data) => {
+      const variantIcon = {
+        success: "CheckCircleIcon",
+        danger: "AlertTriangleIcon",
+        info: "InfoIcon",
+      };
+      this.$toast({
+        component: ToastificationContent,
+        props: {
+          title: data.title,
+          icon: variantIcon[data.variant],
+          variant: data.variant,
+        },
+      });
+    });
+    this.$socket.on("notification", (data) => {
+      this.notification(data);
+    });
   },
 
   beforeCreate() {
     // Set colors in theme
-    const colors = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark']
+    const colors = [
+      "primary",
+      "secondary",
+      "success",
+      "info",
+      "warning",
+      "danger",
+      "light",
+      "dark",
+    ];
 
     // eslint-disable-next-line no-plusplus
     for (let i = 0, len = colors.length; i < len; i++) {
-      $themeColors[colors[i]] = useCssVar(`--${colors[i]}`, document.documentElement).value.trim()
+      $themeColors[colors[i]] = useCssVar(
+        `--${colors[i]}`,
+        document.documentElement
+      ).value.trim();
     }
 
     // Set Theme Breakpoints
-    const breakpoints = ['xs', 'sm', 'md', 'lg', 'xl']
+    const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 
     // eslint-disable-next-line no-plusplus
     for (let i = 0, len = breakpoints.length; i < len; i++) {
-      $themeBreakpoints[breakpoints[i]] = Number(useCssVar(`--breakpoint-${breakpoints[i]}`, document.documentElement).value.slice(0, -2))
+      $themeBreakpoints[breakpoints[i]] = Number(
+        useCssVar(
+          `--breakpoint-${breakpoints[i]}`,
+          document.documentElement
+        ).value.slice(0, -2)
+      );
     }
 
     // Set RTL
-    const { isRTL } = $themeConfig.layout
-    document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr')
+    const { isRTL } = $themeConfig.layout;
+    document.documentElement.setAttribute("dir", isRTL ? "rtl" : "ltr");
   },
 
   methods: {
-
     notification(data) {
-      Notification.requestPermission(result => {
-        if (result === 'granted') {
-          new Notification('Hey Taksi Yeni Bildirim Var', {
-            body: 'Hey Taksi Yeni Bildirim Var'
-          })
+      Notification.requestPermission((result) => {
+        if (result === "granted") {
+          new Notification("Hey Taksi Yeni Bildirim Var", {
+            body: "Hey Taksi Yeni Bildirim Var",
+          });
         }
 
-        toastBus.$emit('toast', data)
-      })
+        toastBus.$emit("toast", data);
+      });
     },
-
   },
 
   setup() {
-    const { skin, skinClasses } = useAppConfig()
+    const { skin, skinClasses } = useAppConfig();
 
     // If skin is dark when initialized => Add class to body
-    if (skin.value === 'dark') document.body.classList.add('dark-layout')
+    if (skin.value === "dark") document.body.classList.add("dark-layout");
 
     // Provide toast for Composition API usage
     // This for those apps/components which uses composition API
@@ -101,19 +131,19 @@ export default {
       closeButton: false,
       icon: false,
       timeout: 3000,
-      transition: 'Vue-Toastification__fade',
-    })
+      transition: "Vue-Toastification__fade",
+    });
 
     // Set Window Width in store
-    store.commit('app/UPDATE_WINDOW_WIDTH', window.innerWidth)
-    const { width: windowWidth } = useWindowSize()
-    watch(windowWidth, val => {
-      store.commit('app/UPDATE_WINDOW_WIDTH', val)
-    })
+    store.commit("app/UPDATE_WINDOW_WIDTH", window.innerWidth);
+    const { width: windowWidth } = useWindowSize();
+    watch(windowWidth, (val) => {
+      store.commit("app/UPDATE_WINDOW_WIDTH", val);
+    });
 
     return {
       skinClasses,
-    }
+    };
   },
-}
+};
 </script>

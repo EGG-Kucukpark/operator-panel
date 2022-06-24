@@ -102,7 +102,7 @@
      component: () => import('@/views/operator/settings/logs.vue'),
      meta: {
        requiresAuth: true,
-       pageTitle: 'Kayıtlar',
+       pageTitle: 'Raporlar',
        breadcrumb: [{
          text: 'Ayarlar',
          route: 'settings',

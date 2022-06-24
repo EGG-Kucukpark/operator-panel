@@ -2,7 +2,7 @@
   <div>
     <app-collapse class="mb-2">
       <app-collapse-item title="Teklifler">
-          <discountOffers />
+        <discountOffers />
       </app-collapse-item>
     </app-collapse>
 
@@ -10,11 +10,7 @@
     <b-row class="match-height">
       <!-- Driver Cards -->
       <b-col v-for="header in headers" :key="header" sm="12" lg="3">
-        <Drivers-card
-          :cardHeader="header"
-          :drivers="drivers"
-          @showDriver="setCenter"
-        />
+        <Drivers-card :cardHeader="header" :drivers="drivers" @showDriver="setCenter" />
       </b-col>
       <!-- Customer Card -->
       <b-col sm="12" lg="3">
@@ -73,12 +69,21 @@ export default {
   },
 
   mounted() {
-    this.$socket.on("driverLoc", (data) => {
-      this.getDrivers();
-    });
     this.$socket.on("customerLoc", (data) => {
       this.getCustomers();
     });
+    this.$socket.on("driverLoc", (data) => {
+      this.getDrivers();
+    });
+    this.$socket.on("newCustomer", () => {
+      this.getCustomers();
+      this.$socket.emit("customerLocation");
+    });
+    this.$socket.on("newOffer", () => {
+      this.$store.dispatch("getOffers");
+    });
+
+    this.$store.dispatch("getOffers");
   },
 
   methods: {
@@ -91,10 +96,7 @@ export default {
       this.$http("/instCustomerLocation").then(async (res) => {
         res.data.map((item) => {
           const currentDate = DateTime.now().toISO();
-          const diff = DateTime.fromISO(currentDate).diff(
-            DateTime.fromISO(item.createdAt),
-            "minutes"
-          );
+          const diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), "minutes");
           item.duration = parseInt(diff.minutes);
           if (item.duration > 30) {
             res.data.splice(res.data.indexOf(item), 1);

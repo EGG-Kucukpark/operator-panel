@@ -29,9 +29,7 @@
         empty-filtered-text="Veri Bulunamadı"
       >
         <template #cell(createdAt)="data">
-          <span>{{
-            DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm")
-          }}</span>
+          <span>{{ DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm") }}</span>
         </template>
       </b-table>
     </b-col>
@@ -40,27 +38,12 @@
       <b-row>
         <b-col md="2" sm="4" class="my-1">
           <b-form-group class="mb-0">
-            <label class="d-inline-block text-sm-left mr-50"
-              >Sayfa Düzeni</label
-            >
-            <b-form-select
-              id="perPageSelect"
-              v-model="perPage"
-              size="sm"
-              :options="pageOptions"
-              class="w-50"
-            />
+            <label class="d-inline-block text-sm-left mr-50">Sayfa Düzeni</label>
+            <b-form-select id="perPageSelect" v-model="perPage" size="sm" :options="pageOptions" class="w-50" />
           </b-form-group>
         </b-col>
         <b-col cols="8" class="my-1">
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="totalRows"
-            :per-page="perPage"
-            align="center"
-            size="sm"
-            class="my-0"
-          />
+          <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" size="sm" class="my-0" />
         </b-col>
       </b-row>
     </b-col>
@@ -102,9 +85,7 @@ export default {
   computed: {
     sortOptions() {
       // Create an options list from our fields
-      return this.fields
-        .filter((f) => f.sortable)
-        .map((f) => ({ text: f.label, value: f.key }));
+      return this.fields.filter((f) => f.sortable).map((f) => ({ text: f.label, value: f.key }));
     },
   },
   mounted() {

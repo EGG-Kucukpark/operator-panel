@@ -15,17 +15,17 @@ export default [{
   },
 
   {
-    title: 'Sürüşler',
+    title: 'Yolculuklar',
     route: 'trips',
     icon: 'LayersIcon',
   },
   {
-    title: 'Güncel Randevular',
+    title: 'Randevular',
     route: 'appointments',
     icon: 'CalendarIcon',
   },
   {
-    title: 'Sürücü Başvuruları',
+    title: 'Başvurular',
     route: 'driverApp',
     icon: 'FilePlusIcon',
   },

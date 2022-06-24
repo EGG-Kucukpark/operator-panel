@@ -6,24 +6,13 @@
     <b-row>
       <div style="margin-left: 12px; align-items: center" class="row">
         <h1>Otopilot</h1>
-        <b-form-checkbox
-          v-model="autopilot"
-          @change="autopilotChanged"
-          style="margin-left: 10px"
-          class="custom-control-success"
-          name="check-button"
-          switch
-        />
+        <b-form-checkbox v-model="autopilot" @change="autopilotChanged" style="margin-left: 10px" class="custom-control-success" name="check-button" switch />
       </div>
     </b-row>
 
     <b-form @submit.prevent="driverRedirect">
       <b-card-text class="row">
-        <b-form-group
-          class="col-lg-4 col-sm-12"
-          label="Sürücü Numarası"
-          label-for="surucu"
-        >
+        <b-form-group class="col-lg-4 col-sm-12" label="Sürücü Numarası" label-for="surucu">
           <v-select
             :disabled="autopilot || isApptoday"
             v-model="selectedDriver"
@@ -36,12 +25,7 @@
           >
             <template slot="no-options">Sonuç yok.</template>
 
-            <template
-              v-if="option.status == 'online'"
-              slot="option"
-              slot-scope="option"
-              >{{ option.name }}</template
-            >
+            <template v-if="option.status == 'online'" slot="option" slot-scope="option">{{ option.name }}</template>
 
             <template slot="selected-option" slot-scope="option">
               <div class="selected d-center">{{ option.name }}</div>
@@ -49,11 +33,7 @@
           </v-select>
         </b-form-group>
 
-        <b-form-group
-          label="Müşteri Numarası"
-          label-for="musteri"
-          class="col-lg-4 col-sm-12"
-        >
+        <b-form-group label="Müşteri Numarası" label-for="musteri" class="col-lg-4 col-sm-12">
           <v-select
             v-model="selectedCustomer"
             :filterable="true"
@@ -62,11 +42,7 @@
             taggable
             :options="customers"
             class="style-chooser"
-            :selectable="
-              isApptoday === false
-                ? (option) => option.status == 'online'
-                : (option) => option.status != ''
-            "
+            :selectable="isApptoday === false ? (option) => option.status == 'online' : (option) => option.status != ''"
             placeholder="Lütfen Müşteri Seçiniz "
           >
             <template slot="no-options">Sonuç yok.</template>
@@ -78,10 +54,7 @@
             </li>
 
             <template slot="option" slot-scope="option">
-              <div v-if="isApptoday === false" class="selected d-center">
-                {{ option.userName }} / {{ option.userPhone }} /
-                {{ option.duration }} DK
-              </div>
+              <div v-if="isApptoday === false" class="selected d-center">{{ option.userName }} / {{ option.userPhone }} / {{ option.duration }} DK</div>
 
               <div v-else class="selected d-center">
                 {{ option.name }} / {{ option.phone }} / {{ option.time }} /
@@ -101,30 +74,12 @@
           </v-select>
         </b-form-group>
 
-        <b-form-group
-          label="Müşteri Notu"
-          label-for="musteri"
-          class="col-lg-4 col-sm-12"
-        >
-          <b-form-input
-            :disabled="autopilot"
-            v-model="note"
-            placeholder="Müşteri veya Operator notunu giriniz."
-          />
+        <b-form-group label="Müşteri Notu" label-for="musteri" class="col-lg-4 col-sm-12">
+          <b-form-input :disabled="autopilot" v-model="note" placeholder="Müşteri veya Operator notunu giriniz." />
         </b-form-group>
 
-        <b-form-group
-          style="align-items: center; display: flex; justify-content: center"
-          class="col-12"
-        >
-          <b-button
-            :disabled="autopilot"
-            style="margin-top: 23px"
-            variant="success"
-            type="submit"
-          >
-            Sürücüye Yönlendir
-          </b-button>
+        <b-form-group style="align-items: center; display: flex; justify-content: center" class="col-12">
+          <b-button :disabled="autopilot" style="margin-top: 23px" variant="success" type="submit"> Sürücüye Yönlendir </b-button>
         </b-form-group>
       </b-card-text>
     </b-form>
@@ -167,6 +122,7 @@ export default {
   methods: {
     autopilotChanged() {
       this.$socket.emit("autoTrip", this.autopilot);
+      this.$socket.emit("customerLocation", this.autopilot);
     },
     driverRedirect() {
       let driver = {
@@ -183,10 +139,10 @@ export default {
           name: this.selectedCustomer.driver,
           phone: this.selectedCustomer.driverPhone,
         };
-        customer = this.selectedCustomer.phone;
+        customer = this.selectedCustomer._id;
       } else {
         driver = this.selectedDriver;
-        customer = this.selectedCustomer.userPhone.replace(/\s/g, "");
+        customer = this.selectedCustomer._id;
       }
 
       const data = {
@@ -208,11 +164,9 @@ export default {
     },
 
     getAppointments() {
-      this.$http
-        .get("https://www.turkpark.com.tr:2222/allAppointments?date=today")
-        .then((res) => {
-          this.userAppToday = res.data;
-        });
+      this.$http.get("https://www.turkpark.com.tr:2222/allAppointments?date=today").then((res) => {
+        this.userAppToday = res.data;
+      });
     },
   },
 };

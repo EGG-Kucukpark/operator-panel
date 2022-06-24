@@ -1,5 +1,5 @@
 <template>
-  <b-table responsive="sm" :items="offers" :fields="fields" show-empty empty-text="Teklif Bulunmamaktadır.">
+  <b-table responsive="lg" stack="lg" :items="offers" :fields="fields" show-empty empty-text="Teklif Bulunmamaktadır.">
     <template #cell(user)="data">
       <div class="d-flex flex-column">
         <span class="font-weigth-bolder mb-25">
@@ -15,8 +15,12 @@
         {{ data.item.status === "waiting" ? "Beklemede" : data.item.status === "accepted" ? "Onaylandı" : "Reddedildi" }}
       </b-badge>
     </template>
-    <template #cell(offeredPrice)="data"> {{ data.item.offeredPrice }} TL </template>
-    <template #cell(estimatedPrice)="data"> {{ data.item.estimatedPrice }} TL </template>
+    <template #cell(offeredPrice)="data"> {{ data.item.offeredPrice }} ₺</template>
+    <template #cell(estimatedKm)="data"> {{ data.item.estimatedKm }} KM</template>
+    <template #cell(estimatedPrice)="data"> {{ data.item.estimatedPrice }} ₺</template>
+    <template #cell(createdAt)="data">
+      <span>{{ DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm") }}</span>
+    </template>
     <template #cell(actions)="data">
       <div v-if="data.item.status === 'waiting'" class="d-flex">
         <b-button class="d-flex justify-content-center align-items-center" @click="acceptOffer(data.item)" size="sm" variant="success">
@@ -40,9 +44,11 @@ export default {
       fields: [
         { key: "user", label: "Kullanıcı" },
         { key: "estimatedPrice", label: "Tahmini Fiyat" },
+        { key: "estimatedKm", label: "Tahmini KM" },
         { key: "offeredPrice", label: "Teklif" },
         { key: "location.start", label: "Başlangıç" },
         { key: "location.end", label: "Varış" },
+        { key: "createdAt", label: "Tarih" },
         { key: "status", label: "Durum" },
         { key: "actions", label: "Eylemler" },
       ],
@@ -51,7 +57,7 @@ export default {
   },
   computed: {
     offers() {
-      return this.$store.getters.getAllOffers;
+      return this.$store.getters.getWaitingOffers;
     },
   },
   methods: {

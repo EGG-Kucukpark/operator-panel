@@ -11,6 +11,7 @@ export default {
   },
   getters: {
     getAllOffers: (state) => state.offers,
+    getWaitingOffers: (state) => state.offers.filter((offer) => offer.status === "waiting"),
   },
   actions: {
     getOffers({ commit }) {

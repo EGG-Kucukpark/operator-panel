@@ -16,7 +16,7 @@
 <script>
 import subs from "../components/customers/subs.vue";
 import unsubs from "../components/customers/unsubs.vue";
-import webUsersVue from "../components/settings/logs/webUsers.vue";
+import webUsersVue from "../components/customers/webUsers.vue";
 
 export default {
   components: {

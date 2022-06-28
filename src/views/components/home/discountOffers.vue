@@ -1,5 +1,5 @@
 <template>
-  <b-table responsive="lg" stack="lg" :items="offers" :fields="fields" show-empty empty-text="Teklif Bulunmamaktadır.">
+  <b-table responsive="lg" stacked="md" :items="offers" :fields="fields" show-empty empty-text="Teklif Bulunmamaktadır.">
     <template #cell(user)="data">
       <div class="d-flex flex-column">
         <span class="font-weigth-bolder mb-25">
@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     offers() {
-      return this.$store.getters.getWaitingOffers;
+      return this.$store.getters.getWaitingOffers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     },
   },
   methods: {

@@ -127,7 +127,6 @@ export default {
   methods: {
 
     login() {
-
       this.clicked = true
       this.$http.post('/operator/login', {
         phone: '90' + this.phone.replace(/\D/g, ''),

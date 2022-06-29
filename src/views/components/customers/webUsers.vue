@@ -1,60 +1,68 @@
 <template>
-  <b-row>
-    <b-col offset-md="8" class="my-1">
-      <b-input-group class="input-group-merge">
-        <b-input-group-prepend is-text>
-          <feather-icon icon="SearchIcon" />
-        </b-input-group-prepend>
-        <b-form-input id="filterInput" v-model="filter" type="search" />
-      </b-input-group>
-    </b-col>
+  <div>
+    <add-customer-modal />
+    <b-row>
+      <b-col offset-md="8" style="gap:10px" class="my-1 d-flex gap-1">
+        <b-input-group class="input-group-merge">
+          <b-input-group-prepend is-text>
+            <feather-icon icon="SearchIcon" />
+          </b-input-group-prepend>
+          <b-form-input id="filterInput" v-model="filter" type="search" />
+        </b-input-group>
+        <b-button v-b-modal.modal-customer-add  class="flex-shrink-0" variant="outline-primary">Müşteri Ekle</b-button>
+      </b-col>
 
-    <b-col cols="12">
-      <b-table
-        striped
-        hover
-        responsive
-        :per-page="perPage"
-        :current-page="currentPage"
-        :items="userData"
-        :fields="fields"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        :sort-direction="sortDirection"
-        :filter="filter"
-        :filter-included-fields="filterOn"
-        @filtered="onFiltered"
-        show-empty
-        empty-text="Veri Bulunamadı"
-        empty-filtered-text="Veri Bulunamadı"
-      >
-        <template #cell(createdAt)="data">
-          <span>{{ DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm") }}</span>
-        </template>
-      </b-table>
-    </b-col>
+      <b-col cols="12">
+        <b-table
+          striped
+          hover
+          responsive
+          :per-page="perPage"
+          :current-page="currentPage"
+          :items="userData"
+          :fields="fields"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          :sort-direction="sortDirection"
+          :filter="filter"
+          :filter-included-fields="filterOn"
+          @filtered="onFiltered"
+          show-empty
+          empty-text="Veri Bulunamadı"
+          empty-filtered-text="Veri Bulunamadı"
+        >
+          <template #cell(createdAt)="data">
+            <span>{{ DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm") }}</span>
+          </template>
+        </b-table>
+      </b-col>
 
-    <b-col cols="12">
-      <b-row>
-        <b-col md="2" sm="4" class="my-1">
-          <b-form-group class="mb-0">
-            <label class="d-inline-block text-sm-left mr-50">Sayfa Düzeni</label>
-            <b-form-select id="perPageSelect" v-model="perPage" size="sm" :options="pageOptions" class="w-50" />
-          </b-form-group>
-        </b-col>
-        <b-col cols="8" class="my-1">
-          <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" size="sm" class="my-0" />
-        </b-col>
-      </b-row>
-    </b-col>
-  </b-row>
+      <b-col cols="12">
+        <b-row>
+          <b-col md="2" sm="4" class="my-1">
+            <b-form-group class="mb-0">
+              <label class="d-inline-block text-sm-left mr-50">Sayfa Düzeni</label>
+              <b-form-select id="perPageSelect" v-model="perPage" size="sm" :options="pageOptions" class="w-50" />
+            </b-form-group>
+          </b-col>
+          <b-col cols="8" class="my-1">
+            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" size="sm" class="my-0" />
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+  </div>
 </template>
 
 <script>
 import axios from "axios";
 import { DateTime } from "luxon";
+import addCustomerModal from "./addCustomerModal.vue";
 
 export default {
+  components: {
+    addCustomerModal,
+  },
   data() {
     return {
       ...this.$store.state.app.table,

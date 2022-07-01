@@ -1,5 +1,5 @@
 <template>
-  <b-card style="border-radius: 0.25rem" no-body :class="{ open: visible }" @mouseenter="collapseOpen" @mouseleave="collapseClose">
+  <b-card style="border-radius: 15px" no-body :class="{ open: visible }" @mouseenter="collapseOpen" @mouseleave="collapseClose">
     <b-card-header
       :class="{ collapsed: !visible }"
       :aria-expanded="visible ? 'false' : 'true'"

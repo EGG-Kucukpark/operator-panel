@@ -6,16 +6,17 @@
       <b-tabs>
         <b-tab title="Online">
           <b-card-text v-for="driver in onlineDrivers" :key="driver._id" class="container">
-            <user-info :name="driver.name" :phone="driver.phone" icon="UserIcon" variant="success" />
+            <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="success" />
           </b-card-text>
         </b-tab>
         <b-tab title="Offline">
           <b-card-text v-for="driver in offlineDrivers" :key="driver._id" class="container">
-            <user-info :name="driver.name" :phone="driver.phone" icon="UserIcon" variant="danger" />
+            <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="danger" />
           </b-card-text>
         </b-tab>
         <b-tab title="Meşgul/Yolculuk">
-          <b-card-text class="container">
+          <b-card-text v-for="driver in busyOrTrip" :key="driver._id" class="container">
+            <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="warning" />
           </b-card-text>
         </b-tab>
       </b-tabs>

@@ -12,28 +12,28 @@
       </app-collapse-item>
     </app-collapse>
 
-    <!-- CARDS -->
-    <b-row class="match-height">
-      <!-- Driver Cards -->
-      <b-col v-for="header in headers" :key="header" sm="12" lg="3">
-        <Drivers-card :cardHeader="header" :drivers="drivers" @showDriver="setCenter" />
-      </b-col>
-      <!-- Customer Card -->
-      <b-col sm="12" lg="3">
-        <Customers-card :customers="customers" @showCustomer="setCenter" />
-      </b-col>
-
-      <!-- Driver Redirect -->
-      <!-- <b-col lg="12" md="12">
-        <Driver-redirect :drivers="drivers" :customers="customers" />
-      </b-col> -->
-      <!-- Driver Redirect End -->
-    </b-row>
-    <!-- CARDS END -->
-
     <!-- MAP -->
     <Map :customers="customers" :drivers="drivers" :mapOptions="mapOptions" />
     <!-- MAP END -->
+
+    <!-- CARDS -->
+    <!--  <b-row class="match-height"> -->
+    <!-- Driver Cards -->
+    <!-- <b-col v-for="header in headers" :key="header" sm="12" lg="3">
+        <Drivers-card :cardHeader="header" :drivers="drivers" @showDriver="setCenter" />
+      </b-col> -->
+    <!-- Customer Card -->
+    <!-- <b-col sm="12" lg="3">
+        <Customers-card :customers="customers" @showCustomer="setCenter" />
+      </b-col> -->
+
+    <!-- Driver Redirect -->
+    <!-- <b-col lg="12" md="12">
+        <Driver-redirect :drivers="drivers" :customers="customers" />
+      </b-col> -->
+    <!-- Driver Redirect End -->
+    <!-- </b-row> -->
+    <!-- CARDS END -->
   </div>
 </template>
 

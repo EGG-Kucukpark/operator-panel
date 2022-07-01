@@ -37,9 +37,9 @@
     </template>
   </b-table> -->
   <div class="business-items">
-    <div class="business-item badge-glow">
+    <div class="business-item">
       <div class="d-flex justify-content-between align-items-center">
-        <userInfo v-if="tripdriver" class="mr-1" :name="tripdriver.name" :phone="tripdriver.phone" icon="NavigationIcon" variant="warning" />
+        <userInfo v-if="tripdriver" class="mr-1" :name="tripdriver.name" :phone="tripdriver.phone" icon="driver" variant="warning" />
         <span v-if="tripdriver"><feather-icon size="20" icon="ChevronsRightIcon" /></span>
         <userInfo :name="customer.userName" :phone="customer.userPhone" icon="UserIcon" :variant="customer.status === 'online' ? 'success' : 'warning'" />
       </div>
@@ -64,7 +64,7 @@
             Yönlendir
             <feather-icon class="ml-50" icon="NavigationIcon" />
           </b-button>
-          <b-button class="d-flex justify-content-center align-items-center" size="sm" variant="danger">
+          <b-button @click="$emit('cancel', customer)" class="d-flex justify-content-center align-items-center" size="sm" variant="danger">
             İptal Et
             <feather-icon class="ml-50" icon="XIcon" />
           </b-button>

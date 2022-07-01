@@ -1,7 +1,7 @@
 <template>
   <b-row>
     <b-col v-for="customer in customers" :key="customer._id" class="business-card mb-1" md="4">
-      <customer-card :customer="customer" :drivers="drivers" @selectDriver="selectDriver" />
+      <customer-card :customer="customer" :drivers="drivers" @selectDriver="selectDriver" @cancel="deleteCustomer" />
     </b-col>
   </b-row>
 </template>
@@ -40,6 +40,27 @@ export default {
         customer: customer._id,
         note,
       });
+    },
+    deleteCustomer(customer) {
+      if (confirm("Müşteriyi iptal etmek istediğinize emin misiniz?")) {
+        this.$http
+          .post("/webUsers/cancelCab", {
+            phone: customer.userPhone,
+          })
+          .then(() => {
+            this.$toastBus.$emit("Notification", {
+              title: "Müşteri İptal Edildi",
+              variant: "success",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$toastBus.$emit("Notification", {
+              title: "Müşteri İptal Edilemedi",
+              variant: "error",
+            });
+          });
+      }
     },
   },
 };

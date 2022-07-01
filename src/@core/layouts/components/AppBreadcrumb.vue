@@ -23,7 +23,7 @@
 
     <b-col v-if="this.$route.meta.pageTitle === 'Ana Panel'" class="mb-1" md="3" cols="12">
       <div style="margin-left: 12px; align-items: center" class="d-flex justify-content-end">
-        <b-button v-b-toggle.drivers-sidebar variant="success" class="d-flex mr-1">Sürücüler <font-awesome-icon icon='bars' /></b-button>
+        <b-button v-b-toggle.drivers-sidebar variant="success" size="sm" class="d-flex mr-1">Sürücüler</b-button>
         <h1>Otopilot</h1>
         <b-form-checkbox v-model="autopilot" @change="autopilotChanged" style="margin-left: 10px" class="custom-control-success" name="check-button" switch /></div
     ></b-col>

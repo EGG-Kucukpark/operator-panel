@@ -2,7 +2,8 @@
   <b-media no-body>
     <b-media-aside>
       <b-avatar size="42" :variant="variant">
-        <feather-icon size="18" :icon="icon" />
+        <feather-icon v-if="icon != 'driver'" size="18" :icon="icon" />
+        <font-awesome-icon v-else size="lg" icon="fa-solid fa-car" />
       </b-avatar>
     </b-media-aside>
     <b-media-body>

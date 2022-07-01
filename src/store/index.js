@@ -11,8 +11,8 @@ import general from "./general";
 
 import appConfig from "./app-config";
 import verticalMenu from "./vertical-menu";
-
 import offers from "./offers";
+import customers from "./customers";
 
 Vue.use(Vuex);
 
@@ -22,6 +22,7 @@ export default new Vuex.Store({
     appConfig,
     general,
     verticalMenu,
+    customers,
     offers,
   },
   strict: process.env.DEV,

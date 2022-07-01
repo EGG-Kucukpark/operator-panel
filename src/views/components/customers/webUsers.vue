@@ -2,14 +2,25 @@
   <div>
     <add-customer-modal />
     <b-row>
-      <b-col offset-md="8" style="gap:10px" class="my-1 d-flex gap-1">
+      <b-col md="3">
+        <b-form-group>
+          <flat-pickr
+            v-model="filterDate"
+            class="form-control mt-1"
+            :config="{ mode: 'range', locale: Turkish, altInput: true, altFormat: 'd/m/Y' }"
+            placeholder="Filtrelemek için tarih aralığı seçin..."
+            @input="dateFilter"
+          />
+        </b-form-group>
+      </b-col>
+      <b-col offset-md="4" style="gap: 10px" class="my-1 d-flex gap-1">
         <b-input-group class="input-group-merge">
           <b-input-group-prepend is-text>
             <feather-icon icon="SearchIcon" />
           </b-input-group-prepend>
           <b-form-input id="filterInput" v-model="filter" type="search" />
         </b-input-group>
-        <b-button v-b-modal.modal-customer-add  class="flex-shrink-0" variant="outline-primary">Müşteri Ekle</b-button>
+        <b-button v-b-modal.modal-customer-add class="flex-shrink-0" variant="outline-primary">Müşteri Ekle</b-button>
       </b-col>
 
       <b-col cols="12">
@@ -19,7 +30,7 @@
           responsive
           :per-page="perPage"
           :current-page="currentPage"
-          :items="userData"
+          :items="filterDate ? filteredItems : customers"
           :fields="fields"
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
@@ -55,19 +66,21 @@
 </template>
 
 <script>
-import axios from "axios";
 import { DateTime } from "luxon";
 import addCustomerModal from "./addCustomerModal.vue";
+import flatPickr from "vue-flatpickr-component";
+import { Turkish } from "flatpickr/dist/l10n/tr.js";
 
 export default {
   components: {
     addCustomerModal,
+    flatPickr,
   },
   data() {
     return {
       ...this.$store.state.app.table,
       userData: [],
-      perPage: 5,
+      perPage: 20,
       pageOptions: [3, 5, 10, 20, 30, 50],
       totalRows: 1,
       currentPage: 1,
@@ -88,6 +101,9 @@ export default {
         { key: "createdAt", label: "Oluşturma Tarihi", sortable: true },
       ],
       DateTime,
+      filterDate: null,
+      filteredItems: [],
+      Turkish,
     };
   },
   computed: {
@@ -95,10 +111,13 @@ export default {
       // Create an options list from our fields
       return this.fields.filter((f) => f.sortable).map((f) => ({ text: f.label, value: f.key }));
     },
+    customers() {
+      this.totalRows = this.$store.getters.customers.length;
+      return this.$store.getters.customers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    },
   },
   mounted() {
-    this.getData();
-    // Set the initial number of items
+    this.$store.dispatch("getCustomers");
   },
   methods: {
     info(item, index, button) {
@@ -115,17 +134,25 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    getData() {
-      axios
-        .get("https://www.turkpark.com.tr:2222/webUsers")
-        .then((response) => {
-          this.totalRows = response.data.length;
-          this.userData = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    dateFilter() {
+      const dates = this.filterDate.split(" - ");
+
+      const lastDate = dates[1] ? new Date(dates[1]).setDate(new Date(dates[1]).getDate() + 1) : null;
+
+      this.filteredItems = this.customers.filter((item) => {
+        if (!lastDate && DateTime.fromISO(item.createdAt).toFormat("yyyy-MM-dd") === dates[0]) {
+          return item;
+        } else if (new Date(item.createdAt) >= new Date(dates[0]) && new Date(item.createdAt) <= lastDate) {
+          return item;
+        }
+      });
+      this.filteredItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      this.filterDate ? this.onFiltered(this.filteredItems) : this.onFiltered(this.customers);
     },
   },
 };
 </script>
+
+<style lang="scss">
+@import "@core/scss/vue/libs/vue-flatpicker.scss";
+</style>

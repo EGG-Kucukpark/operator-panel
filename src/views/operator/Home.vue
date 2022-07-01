@@ -1,5 +1,11 @@
 <template>
   <div>
+    <driver-statuses :drivers="drivers" />
+    <app-collapse class="mb-2">
+      <customers-collapse-vue :customersLength="customers.length" title="Müşteriler">
+        <customer-list-vue :customers="customers" :drivers="drivers" />
+      </customers-collapse-vue>
+    </app-collapse>
     <app-collapse class="mb-2">
       <app-collapse-item title="Teklifler">
         <discountOffers />
@@ -18,9 +24,9 @@
       </b-col>
 
       <!-- Driver Redirect -->
-      <b-col lg="12" md="12">
+      <!-- <b-col lg="12" md="12">
         <Driver-redirect :drivers="drivers" :customers="customers" />
-      </b-col>
+      </b-col> -->
       <!-- Driver Redirect End -->
     </b-row>
     <!-- CARDS END -->
@@ -39,6 +45,9 @@ import Map from "../components/home/map.vue";
 import discountOffers from "../components/home/discountOffers.vue";
 import AppCollapse from "@core/components/app-collapse/AppCollapse.vue";
 import AppCollapseItem from "@core/components/app-collapse/AppCollapseItem.vue";
+import customersCollapseVue from "../components/customers/customersCollapse.vue";
+import customerListVue from "../components/home/customers/customerList.vue";
+import driverStatuses from "../components/home/drivers/driverStatuses.vue";
 import { DateTime } from "luxon";
 export default {
   components: {
@@ -49,6 +58,9 @@ export default {
     discountOffers,
     AppCollapse,
     AppCollapseItem,
+    customersCollapseVue,
+    customerListVue,
+    driverStatuses,
   },
   data() {
     return {

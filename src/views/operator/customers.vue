@@ -1,9 +1,9 @@
 <template>
   <b-tabs lazy>
-    <b-tab title="Whatsapp Kullanıcılar">
+    <!-- <b-tab title="Whatsapp Kullanıcılar">
       <subs />
-    </b-tab>
-    <b-tab title="Web Kullanıcılar">
+    </b-tab> -->
+    <b-tab title="Müşteriler">
       <b-card>
         <webUsersVue />
       </b-card>

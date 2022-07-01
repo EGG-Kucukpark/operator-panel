@@ -11,8 +11,8 @@
       <slot name="header">
         <h2 class="p-1">{{ title }}</h2>
       </slot>
-      <b-badge v-if="offersLength > 0" variant="warning" class="badge-glow mr-4 p-50"> Bekleyen {{ offersLength }} Adet Teklif Bulunmaktadır </b-badge>
-      <b-badge v-else variant="success" class="badge-glow mr-4 p-50"> Bekleyen Teklif Bulunmamaktadır </b-badge>
+      <b-badge v-if="customersLength > 0" variant="warning" class="badge-glow mr-4 p-50"> Bekleyen {{ customersLength }} Müşteri Bulunmaktadır </b-badge>
+      <b-badge v-else variant="success" class="badge-glow mr-4 p-50"> Bekleyen Müşteri Bulunmamaktadır </b-badge>
     </b-card-header>
 
     <b-collapse :id="collapseItemID" v-model="visible" :accordion="accordion" role="tabpanel">
@@ -24,16 +24,9 @@
 </template>
 
 <script>
-import { BCard, BCardHeader, BCardBody, BCollapse } from "bootstrap-vue";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
-  components: {
-    BCard,
-    BCardHeader,
-    BCardBody,
-    BCollapse,
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -41,6 +34,10 @@ export default {
     },
     title: {
       type: String,
+      required: true,
+    },
+    customersLength: {
+      type: Number,
       required: true,
     },
   },

@@ -2,7 +2,7 @@
   <div>
     <driver-statuses :drivers="drivers" />
     <app-collapse class="mb-2">
-      <customers-collapse-vue :customersLength="customers.length" title="Müşteriler">
+      <customers-collapse-vue :customersLength="customers.filter((item) => item.status === 'online').length" title="Müşteriler">
         <customer-list-vue :customers="customers" :drivers="drivers" />
       </customers-collapse-vue>
     </app-collapse>
@@ -75,12 +75,9 @@ export default {
     };
   },
 
-  created() {
+  mounted() {
     this.getCustomers();
     this.getDrivers();
-  },
-
-  mounted() {
     this.$socket.on("customerLoc", (data) => {
       this.getCustomers();
     });
@@ -105,15 +102,15 @@ export default {
       });
     },
     getCustomers() {
-      this.$http("/instCustomerLocation").then(async (res) => {
-        res.data.map((item) => {
+      this.$http("/instCustomerLocation").then((res) => {
+        /* res.data.map((item) => {
           const currentDate = DateTime.now().toISO();
           const diff = DateTime.fromISO(currentDate).diff(DateTime.fromISO(item.createdAt), "minutes");
           item.duration = parseInt(diff.minutes);
           if (item.duration > 30) {
             res.data.splice(res.data.indexOf(item), 1);
           }
-        });
+        }); */
 
         this.customers = res.data;
       });

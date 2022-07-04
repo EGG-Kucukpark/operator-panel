@@ -39,12 +39,10 @@
   <div class="business-items">
     <div class="business-item">
       <div class="d-flex justify-content-between align-items-center">
-        <userInfo v-if="tripdriver" class="mr-1" :name="tripdriver.name" :phone="tripdriver.phone" icon="driver" variant="warning" />
-        <span v-if="tripdriver"><feather-icon size="20" icon="ChevronsRightIcon" /></span>
         <userInfo :name="customer.userName" :phone="customer.userPhone" icon="UserIcon" :variant="customer.status === 'online' ? 'success' : 'warning'" />
       </div>
 
-      <div v-if="customer.status === 'online'">
+      <div>
         <v-select class="v-text-field mt-1" placeholder="Sürücü Seçiniz..." v-model="selectedDriver" :options="drivers.filter((item) => item.status === 'online')" label="name">
           <template #no-options> Aktif Sürücü Bulunamadı... </template>
         </v-select>

@@ -9,14 +9,15 @@
             <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="success" />
           </b-card-text>
         </b-tab>
+        <b-tab class="mt-2" title="Meşgul/Yolculuk">
+          <b-card-text v-for="driver in busyOrTrip" :key="driver._id" class="business-card ml-50 mr-50">
+            <userInfo v-if="driver.status === 'busy' && !driver.customerName" class="ml-1" :name="driver.name" :phone="driver.phone" icon="driver" variant="warning" />
+            <accepted-customer-card v-else-if="(driver.status === 'busy' && driver.customerName) || (driver.status === 'trip' && driver.customerName)" :driver="driver" />
+          </b-card-text>
+        </b-tab>
         <b-tab title="Offline">
           <b-card-text v-for="driver in offlineDrivers" :key="driver._id" class="container">
             <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="danger" />
-          </b-card-text>
-        </b-tab>
-        <b-tab title="Meşgul/Yolculuk">
-          <b-card-text v-for="driver in busyOrTrip" :key="driver._id" class="container">
-            <user-info :name="driver.name" :phone="driver.phone" icon="driver" variant="warning" />
           </b-card-text>
         </b-tab>
       </b-tabs>
@@ -26,10 +27,12 @@
 
 <script>
 import userInfo from "../customers/components/userInfo.vue";
+import acceptedCustomerCard from "./components/acceptedCustomerCard.vue";
 
 export default {
   components: {
     userInfo,
+    acceptedCustomerCard,
   },
   props: {
     drivers: {

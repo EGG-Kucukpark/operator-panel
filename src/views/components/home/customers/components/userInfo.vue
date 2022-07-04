@@ -7,7 +7,7 @@
       </b-avatar>
     </b-media-aside>
     <b-media-body>
-      <h6>{{ name }}</h6>
+      <h6 class="m-0">{{ name }}</h6>
       <small>{{ phone }}</small>
     </b-media-body>
   </b-media>

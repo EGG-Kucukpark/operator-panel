@@ -1,16 +1,19 @@
 <template>
   <b-row>
     <b-col v-for="customer in customers" :key="customer._id" class="business-card mb-1" md="4">
-      <customer-card :customer="customer" :drivers="drivers" @selectDriver="selectDriver" @cancel="deleteCustomer" />
+      <customer-card v-if="customer.status === 'online'" :customer="customer" :drivers="drivers" @selectDriver="selectDriver" @cancel="deleteCustomer" />
+      <redirected-driver v-else-if="customer.status === 'redirected_driver'" :customer="customer" />
     </b-col>
   </b-row>
 </template>
 
 <script>
 import customerCard from "./components/customerCard.vue";
+import redirectedDriver from "./components/redirectedDriver.vue";
 export default {
   components: {
     customerCard,
+    redirectedDriver,
   },
   props: {
     customers: {

@@ -1,5 +1,4 @@
 <template>
-  <div>
     <b-sidebar id="drivers-sidebar" bg-variant="white" shadow right>
       <h3 class="text-center">Sürücüler</h3>
       <hr />
@@ -22,7 +21,6 @@
         </b-tab>
       </b-tabs>
     </b-sidebar>
-  </div>
 </template>
 
 <script>

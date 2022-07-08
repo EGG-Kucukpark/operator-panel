@@ -9,10 +9,10 @@
           </b-form-group>
           <small class="text-danger">{{ errors[0] }}</small>
         </validation-provider>
-        <validation-provider name="Telefon" rules="required|min:14">
+        <validation-provider name="Telefon" rules="required|min:13">
           <b-form-group>
             <label for="phone">Telefon:</label>
-            <b-form-input v-mask="['# ### ### ####']" v-model="phone" id="phone" placeholder="Telefon" />
+            <b-form-input v-mask="['05## ### ####']" @keydown.delete="phoneCheck" v-model="phone" id="phone" placeholder="Telefon" />
           </b-form-group>
         </validation-provider>
         <validation-provider #default="{ errors }" name="E-Posta" rules="email">
@@ -49,7 +49,7 @@ export default {
     return {
       fullname: null,
       email: null,
-      phone: null,
+      phone: "05",
 
       required,
       email,
@@ -94,10 +94,13 @@ export default {
           console.log(error);
         });
     },
+    phoneCheck(event) {
+      if (this.phone.length < 3) event.preventDefault();
+    },
     cleanInputs() {
       this.fullname = null;
       this.email = null;
-      this.phone = null;
+      this.phone = "05";
     },
   },
 };

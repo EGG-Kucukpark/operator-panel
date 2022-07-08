@@ -2,7 +2,7 @@
   <div>
     <add-customer-modal />
     <b-row>
-      <b-col md="3">
+      <b-col md="4">
         <b-form-group>
           <flat-pickr
             v-model="filterDate"
@@ -13,7 +13,7 @@
           />
         </b-form-group>
       </b-col>
-      <b-col offset-md="4" style="gap: 10px" class="my-1 d-flex gap-1">
+      <b-col offset-md="3" style="gap: 10px" class="my-1 d-flex gap-1">
         <b-input-group class="input-group-merge">
           <b-input-group-prepend is-text>
             <feather-icon icon="SearchIcon" />
@@ -41,6 +41,7 @@
           show-empty
           empty-text="Veri Bulunamadı"
           empty-filtered-text="Veri Bulunamadı"
+          @row-clicked="customerDetails"
         >
           <template #cell(createdAt)="data">
             <span>{{ DateTime.fromISO(data.item.createdAt).toFormat("dd.MM.yyyy HH:mm") }}</span>
@@ -79,7 +80,6 @@ export default {
   data() {
     return {
       ...this.$store.state.app.table,
-      userData: [],
       perPage: 20,
       pageOptions: [3, 5, 10, 20, 30, 50],
       totalRows: 1,
@@ -140,14 +140,15 @@ export default {
       const lastDate = dates[1] ? new Date(dates[1]).setDate(new Date(dates[1]).getDate() + 1) : null;
 
       this.filteredItems = this.customers.filter((item) => {
-        if (!lastDate && DateTime.fromISO(item.createdAt).toFormat("yyyy-MM-dd") === dates[0]) {
-          return item;
-        } else if (new Date(item.createdAt) >= new Date(dates[0]) && new Date(item.createdAt) <= lastDate) {
-          return item;
-        }
+        if (!lastDate && DateTime.fromISO(item.createdAt).toFormat("yyyy-MM-dd") === dates[0]) return item;
+        else if (new Date(item.createdAt) >= new Date(dates[0]) && new Date(item.createdAt) <= lastDate) return item;
       });
       this.filteredItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       this.filterDate ? this.onFiltered(this.filteredItems) : this.onFiltered(this.customers);
+    },
+    customerDetails(customer) {
+      this.$store.commit("setCustomer", customer);
+      this.$router.push({ name: "customer-details" });
     },
   },
 };

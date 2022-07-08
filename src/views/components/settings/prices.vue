@@ -15,7 +15,7 @@
         </b-col>
         <b-col md="12">
           <b-col md="6">
-            <b-form-group label="Tahmini Km Ücreti" label-for="mc-first-name">
+            <b-form-group label="Web Km Ücreti" label-for="mc-first-name">
               <b-form-input
                 id="mc-first-name"
                 v-model="estimatedPrice"
